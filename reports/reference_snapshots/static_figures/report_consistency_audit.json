@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "issue_count": 0,
+  "issues": [],
+  "stats": {
+    "canonical_peak_count": 21,
+    "plotted_peak_count": 21,
+    "labeled_peak_count": 21,
+    "evidence_rows_raw": 24,
+    "evidence_rows_deduped": 21,
+    "label_min_height": 0.05
+  }
+}

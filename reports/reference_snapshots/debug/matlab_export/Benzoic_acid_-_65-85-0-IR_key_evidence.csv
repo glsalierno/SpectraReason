@@ -1,0 +1,13 @@
+assignment_label,key_bands_cm1,confidence_status,ontology_category,score,notes
+Alkene,,Tentative,specific_fg,0.4400,
+Broad Oh Nh Region,,Tentative,local_motif,0.4400,
+Carbonyl Region,,Tentative,local_motif,0.4400,
+C O Fingerprint Region,,Tentative,local_motif,0.4400,
+Aromatic Cc Region,,Tentative,local_motif,0.4400,
+Enamine Region,,Tentative,local_motif,0.4400,
+Heterocyclic N O Region,,Tentative,local_motif,0.4400,
+Pyrrole N Oxide Like,,Tentative,local_motif,0.4400,
+N Oxide Confounded Region,,Tentative,local_motif,0.4400,
+Hydroxy-containing,,Tentative,fallback,0.4400,
+Carbonyl-containing,,Tentative,fallback,0.4400,
+Nitrogen-containing,,Tentative,fallback,0.4400,

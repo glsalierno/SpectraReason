@@ -1,0 +1,33 @@
+peak_position_cm1,peak_height,annotation_text,category,hover_text
+433.90,1.000000,434,other,<b>434 cm⁻¹</b><br>Local peak (no strong band match)
+409.32,0.953329,409,other,<b>409 cm⁻¹</b><br>Local peak (no strong band match)
+402.09,0.939113,402,other,<b>402 cm⁻¹</b><br>Local peak (no strong band match)
+1084.28,0.704897,1084,c_o,<b>1084 cm⁻¹</b><br>Band: ether<br>Category: c_o
+858.65,0.533091,859,other,<b>859 cm⁻¹</b><br>Local peak (no strong band match)
+882.76,0.521359,883,other,<b>883 cm⁻¹</b><br>Local peak (no strong band match)
+1028.36,0.394196,1028,c_o,<b>1028 cm⁻¹</b><br>Band: ether<br>Category: c_o
+1323.41,0.336507,1323,nitro,<b>1323 cm⁻¹</b><br>Band: nitro<br>Category: nitro
+608.43,0.244123,608,other,<b>608 cm⁻¹</b><br>Local peak (no strong band match)
+688.46,0.234029,688,other,<b>688 cm⁻¹</b><br>Local peak (no strong band match)
+1477.21,0.228608,1477,other,<b>1477 cm⁻¹</b><br>Band: aromatic<br>Category: other
+573.72,0.223521,574,other,<b>574 cm⁻¹</b><br>Local peak (no strong band match)
+1249.65,0.206058,1250,other,<b>1250 cm⁻¹</b><br>Band: ester<br>Category: other
+1664.75,0.173363,1665,other,<b>1665 cm⁻¹</b><br>Band: heteroaromatic<br>Category: other
+499.47,0.159672,499,other,<b>499 cm⁻¹</b><br>Local peak (no strong band match)
+1425.14,0.152096,1425,other,<b>1425 cm⁻¹</b><br>Band: aromatic<br>Category: other
+1538.92,0.149408,1539,other,<b>1539 cm⁻¹</b><br>Band: aromatic<br>Category: other
+756.92,0.147659,757,other,<b>757 cm⁻¹</b><br>Local peak (no strong band match)
+1565.43,0.138431,1565,other,<b>1565 cm⁻¹</b><br>Band: aromatic<br>Category: other
+3221.50,0.135079,3222,hydroxy,<b>3222 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+804.65,0.125732,805,other,<b>805 cm⁻¹</b><br>Local peak (no strong band match)
+970.50,0.123894,971,other,<b>971 cm⁻¹</b><br>Local peak (no strong band match)
+633.50,0.140068,634,other,<b>634 cm⁻¹</b><br>Local peak (no strong band match)
+777.65,0.130794,778,other,<b>778 cm⁻¹</b><br>Local peak (no strong band match)
+989.30,0.113161,989,si_o,<b>989 cm⁻¹</b><br>Band: siloxane<br>Category: si_o
+2868.11,0.092771,2868,hydroxy,<b>2868 cm⁻¹</b><br>Band: carboxylic_acid_OH<br>Category: hydroxy
+2949.11,0.087377,2949,hydroxy,<b>2949 cm⁻¹</b><br>Band: carboxylic_acid_OH<br>Category: hydroxy
+917.95,0.080382,918,other,<b>918 cm⁻¹</b><br>Local peak (no strong band match)
+438.73,0.070807,439,other,<b>439 cm⁻¹</b><br>Local peak (no strong band match)
+1164.79,0.068229,1165,c_o,<b>1165 cm⁻¹</b><br>Band: ester<br>Category: c_o
+1375.48,0.059126,1375,nitro,<b>1375 cm⁻¹</b><br>Band: heteroaromatic<br>Category: nitro
+3310.21,0.056067,3310,hydroxy,<b>3310 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy

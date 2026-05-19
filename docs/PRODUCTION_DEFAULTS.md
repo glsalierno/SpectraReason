@@ -1,0 +1,49 @@
+# Production defaults (SpectraReason v5)
+
+Frozen **product** settings for reproducible front-facing reports. Override only
+deliberately for experiments.
+
+| Setting | Production value | Notes |
+|---------|------------------|-------|
+| **ontology** | `v4` | SMARTS + band library v4 |
+| **guardrails** | `v3` | `apply_v3_guardrails` + nitro/N-oxide/amide overlap |
+| **fusion** | `annotate` | ML does not override rules; annotates consensus |
+| **ml_guardrails** | `strict` | ML heads capped when rules disagree |
+| **rules_preset** | `conservative` | Default in `ml/ftir_rules.py` evidence thresholds |
+| **report_style** | `product_v1` | Interpretation panel + band map in technical details |
+| **report_audience** | `front` | Spectroscopist summary, key evidence, collapsed metadata |
+| **visual_theme** | `matlab` | White background, MATLAB-blue trace (deliverables) |
+| **peak_sensitivity** | `sensitive` | More peaks detected for crowded fingerprints |
+| **show_weak_peaks** | on | Plot faint peaks (not all labeled) |
+| **region_ruler** | on (default for `product_v1`) | 1450–1650 label: C=C / amide II / N–O |
+| **front_max_peak_labels** | `10` | Cap interactive peak labels in front mode |
+| **peak_label thresholds (front)** | height 0.15, prominence 0.05 | See `resolve_peak_label_thresholds` |
+| **peak_label thresholds (debug)** | height 0.05, prominence 0.025 | Full diagnostic labeling |
+| **feature_set (training)** | `spectral+evidence_v2` | 434-D family/specific models |
+| **ml_mode** | `both` | Family + specific joblibs |
+| **shade** | band shading on, `label_band_shading` optional | Upper-mid tiered shading when enabled |
+
+## Front vs debug
+
+| | **Front** (`--report-audience front`) | **Debug** (`--report-audience debug`) |
+|---|--------------------------------------|-------------------------------------|
+| Summary | Spectroscopist prose + consensus per spectrum | Full interpretation panel |
+| Tables | Key evidence + front consensus table | Generic summary + full assignment tables |
+| Peak labels | ~10 prioritized | More labels; peak-picking summary in details |
+| Metadata | Hidden unless `--show-metadata` | Shown in technical details |
+| Raw ontology spam | Local motifs / NO₂ regions suppressed in consensus | Full diagnostics including local motifs |
+| Reproducibility block | Collapsed under Technical details | Same JSON block, expanded details |
+
+## Production models (local paths)
+
+Not in git — obtain from maintainer or train per `docs/COMMANDS.md`:
+
+- `ml/runs/struct_fg_family_v4_ontology_latest.joblib`
+- `ml/runs/struct_fg_specific_v4_ontology_latest.joblib`
+
+## Config paths (structure only)
+
+- `configs/rule_presets/` — conservative, sensitive, phenol_alcohol_strict
+- `configs/production/` — pinned YAML/JSON presets (future CLI wiring)
+- `configs/experiments/` — non-production sweeps
+- `ml/runs/experiments/` — dated training outputs (gitignored)

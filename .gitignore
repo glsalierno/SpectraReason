@@ -1,0 +1,100 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+.env.*
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node (if any tooling added later)
+node_modules/
+
+# ML / data artifacts (never commit proprietary or large binaries)
+*.joblib
+*.npz
+*.sqlite
+*.db
+*.zip
+*.7z
+*.tar
+*.tar.gz
+*.gz
+*.h5
+*.hdf5
+*.parquet
+
+# Proprietary / local-only data
+data/external_sources/raw/
+data/experimental/
+data/training/*.npz
+data/training/*.meta.json
+data/training/pubchem_structure_cache*.json
+models/*.meta.json
+ml/runs/
+models/*.joblib
+models/*.npz
+
+# Generated reports and archives
+reports/_archive/
+reports/_smoke/
+reports/output_*/
+reports/model_training_*/
+reports/ftir_powder_*/
+reports/product_v1_demo/
+reports/*_test/
+reports/*_validation/
+
+# Generated figures (curated assets live under docs/assets/)
+reports/**/presentation/figures/*.png
+reports/**/presentation/figures/*.svg
+reports/**/presentation/figures/*.pdf
+reports/**/*.png
+reports/**/*.svg
+reports/**/*.pdf
+!docs/assets/**
+
+# Logs and OS
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# Personal / machine-specific manifests
+reports/archive_manifest_*.csv
+**/personal_manifest*.json
+**/*_local_paths.*
+
+# Local dev notes and non-reference report outputs
+reports/*_audit.md
+reports/release_stabilization_audit.md
+reports/vulture_*
+reports/codebase_tidy_audit.md
+reports/*_benchmark*.md
+reports/*_operations.md
+reports/FIGURES_AND_EXPORT.md
+reports/REPORT_*.md
+reports/ftir_powder*/
+reports/product_v1_*_demo/
+reports/examples_*/
+HANDOFF_CURSOR_PARALLEL.md
+context.md
+examples/_evidence_pipeline_report/
+CANONICAL_OUTPUTS.md

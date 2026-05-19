@@ -1,0 +1,13 @@
+# SpectraReason production dependencies
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+scikit-learn>=1.3
+joblib>=1.3
+mordred
+matplotlib>=3.7
+plotly>=5.18
+certifi
+PyYAML>=6.0
+# Optional: pip install kaleido  (static Plotly PNG export)
+# RDKit: conda install -c conda-forge rdkit  (required for SMARTS training)

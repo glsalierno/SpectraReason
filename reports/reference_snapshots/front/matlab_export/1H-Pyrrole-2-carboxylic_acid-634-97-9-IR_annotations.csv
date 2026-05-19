@@ -1,0 +1,14 @@
+peak_position_cm1,peak_height,annotation_text,category,hover_text
+1749.58,1.000000,1750,carbonyl,<b>1750 cm⁻¹</b><br>Band: ketone<br>Category: carbonyl
+1099.52,0.633637,1100,c_o,<b>1100 cm⁻¹</b><br>Band: ether<br>Category: c_o
+1423.59,0.385035,1424,aromatic,<b>1424 cm⁻¹</b><br>Band: heteroaromatic<br>Category: aromatic
+3587.90,0.291290,3588,hydroxy,<b>3588 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+721.44,0.277620,721,other,<b>721 cm⁻¹</b><br>Local peak (no strong band match)
+2363.00,0.265595,2363,other,<b>2363 cm⁻¹</b><br>Local peak (no strong band match)
+3499.17,0.220839,3499,hydroxy,<b>3499 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+2326.35,0.204326,2326,other,<b>2326 cm⁻¹</b><br>Local peak (no strong band match)
+694.43,0.179231,694,other,<b>694 cm⁻¹</b><br>Local peak (no strong band match)
+1558.61,0.129127,1559,aromatic,<b>1559 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1286.63,0.121587,1287,other,<b>1287 cm⁻¹</b><br>Band: aryl_ether<br>Category: other
+1358.00,0.111105,1358,other,<b>1358 cm⁻¹</b><br>Band: heterocyclic_N_O<br>Category: other
+1219.11,0.096976,1219,c_o,<b>1219 cm⁻¹</b><br>Band: ester<br>Category: c_o

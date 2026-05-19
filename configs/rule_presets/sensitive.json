@@ -1,0 +1,12 @@
+{
+  "description": "Lower thresholds; more tentative hits for screening.",
+  "evidence": {
+    "region_signal_frac": 0.06,
+    "min_band_support": 0.06
+  },
+  "label_overrides": {
+    "phenol": { "min_score": 0.28 },
+    "alcohol": { "min_score": 0.22 },
+    "ether": { "min_score": 0.22 }
+  }
+}

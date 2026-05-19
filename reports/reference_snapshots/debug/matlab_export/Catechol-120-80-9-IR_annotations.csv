@@ -1,0 +1,11 @@
+peak_position_cm1,peak_height,annotation_text,category,hover_text
+1262.00,1.000000,1262,c_o,<b>1262 cm⁻¹</b><br>Band: ester<br>Category: c_o
+1506.00,0.676380,1506,other,<b>1506 cm⁻¹</b><br>Band: aromatic<br>Category: other
+1162.00,0.531241,1162,c_o,<b>1162 cm⁻¹</b><br>Band: ester<br>Category: c_o
+742.00,0.518727,742,other,<b>742 cm⁻¹</b><br>Local peak (no strong band match)
+1090.00,0.295723,1090,c_o,<b>1090 cm⁻¹</b><br>Band: ether<br>Category: c_o
+1610.00,0.218739,1610,other,<b>1610 cm⁻¹</b><br>Band: aromatic<br>Category: other
+1318.00,0.214795,1318,other,<b>1318 cm⁻¹</b><br>Band: nitro<br>Category: other
+3062.00,0.132701,3062,hydroxy,<b>3062 cm⁻¹</b><br>Band: carboxylic_acid_OH<br>Category: hydroxy
+858.00,0.113126,858,other,<b>858 cm⁻¹</b><br>Local peak (no strong band match)
+1026.00,0.072621,1026,c_o,<b>1026 cm⁻¹</b><br>Band: ether<br>Category: c_o

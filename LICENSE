@@ -1,0 +1,14 @@
+SpectraReason — License Placeholder
+=====================================
+
+Copyright (c) 2026 SpectraReason contributors.
+
+This repository is intended for **private collaboration** among invited
+contributors. Redistribution of third-party spectral libraries, NIST indexes,
+or proprietary experimental data is **not permitted** through this repo.
+
+Before public release, replace this file with an appropriate license
+(e.g. MIT, Apache-2.0, or a custom academic-use license) chosen by the
+project owners.
+
+Third-party data policy: see `docs/EXTERNAL_DATASETS.md`.

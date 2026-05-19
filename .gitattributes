@@ -1,0 +1,25 @@
+# Normalize line endings for cross-platform collaborators
+* text=auto
+
+# Source code
+*.py text diff=python
+*.md text
+*.yaml text
+*.yml text
+*.json text
+*.csv text
+*.html text
+*.jdx text linguist-detectable=false
+
+# Shell scripts
+*.sh text eol=lf
+*.ps1 text eol=crlf
+
+# Binary assets (if committed under docs/assets)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.joblib filter=lfs diff=lfs merge=lfs -text
+*.npz filter=lfs diff=lfs merge=lfs -text

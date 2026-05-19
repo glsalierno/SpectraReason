@@ -1,0 +1,13 @@
+assignment_label,key_bands_cm1,confidence_status,ontology_category,score,notes
+Enamine Region,,Supported,local_motif,0.9246,
+Hydroxy-containing,,Supported,fallback,0.8590,
+Heterocyclic N O Region,,Supported,local_motif,0.8554,
+N Oxide Confounded Region,,Supported,local_motif,0.8554,
+Nitrile Alkyne Region,,Supported,local_motif,0.8446,
+Unsaturation,,Supported,fallback,0.8446,
+Broad Oh Nh Region,,Supported,local_motif,0.7790,
+Carbonyl Region,,Supported,local_motif,0.7790,
+C O Fingerprint Region,,Supported,local_motif,0.7790,
+Carbonyl-containing,,Supported,fallback,0.7790,
+C–O-containing,,Supported,fallback,0.7790,
+Alkene,,Supported,specific_fg,0.7646,

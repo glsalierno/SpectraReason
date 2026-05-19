@@ -1,0 +1,257 @@
+# Compact FTIR band reference for interpretability (cm⁻¹).
+# Phrases in reports: "spectral evidence associated with prediction" — not causal proof.
+
+bands:
+  - label: alcohol
+    region_min_cm1: 3200
+    region_max_cm1: 3600
+    mode: O-H stretch
+    strength: strong
+    specificity: low
+    notes: Broad band; overlaps phenol and carboxylic acid O-H.
+    subclasses: [primary_alcohol, secondary_alcohol, tertiary_alcohol]
+
+  - label: phenol
+    region_min_cm1: 3200
+    region_max_cm1: 3600
+    mode: O-H stretch (phenolic)
+    strength: strong
+    specificity: medium
+    notes: Often broad; pair with aromatic C=C and C-O ~1200–1300 cm⁻¹.
+    subclasses: []
+
+  - label: primary_alcohol
+    region_min_cm1: 3200
+    region_max_cm1: 3650
+    mode: O-H stretch
+    strength: strong
+    specificity: low
+    notes: Difficult to distinguish from other O-H without structure.
+
+  - label: amine
+    region_min_cm1: 3300
+    region_max_cm1: 3500
+    mode: N-H stretch
+    strength: medium
+    specificity: medium
+    notes: Primary/secondary show N-H; tertiary often weak or absent.
+
+  - label: primary_amine
+    region_min_cm1: 3300
+    region_max_cm1: 3500
+    mode: N-H stretch (two bands possible)
+    strength: medium
+    specificity: medium
+    notes: ""
+
+  - label: amide
+    region_min_cm1: 3100
+    region_max_cm1: 3500
+    mode: N-H stretch
+    strength: medium
+    specificity: medium
+    notes: Often with amide I ~1650–1680 and amide II ~1550 cm⁻¹.
+
+  - label: pyrrole_like_NH
+    region_min_cm1: 3200
+    region_max_cm1: 3450
+    mode: N-H stretch
+    strength: weak
+    specificity: medium
+    notes: Heteroaromatic NH; context-dependent.
+
+  - label: carbonyl
+    region_min_cm1: 1650
+    region_max_cm1: 1750
+    mode: C=O stretch
+    strength: strong
+    specificity: low
+    notes: Position depends on conjugation and class.
+
+  - label: ketone
+    region_min_cm1: 1705
+    region_max_cm1: 1725
+    mode: C=O stretch
+    strength: strong
+    specificity: medium
+    notes: ""
+
+  - label: aldehyde
+    region_min_cm1: 1720
+    region_max_cm1: 1740
+    mode: C=O stretch
+    strength: strong
+    specificity: medium
+    notes: Often weak C-H aldehyde ~2720–2820 cm⁻¹.
+
+  - label: ester
+    region_min_cm1: 1735
+    region_max_cm1: 1755
+    mode: C=O stretch
+    strength: strong
+    specificity: medium
+    notes: C-O ~1150–1250 cm⁻¹.
+
+  - label: carboxylic_acid
+    region_min_cm1: 1700
+    region_max_cm1: 1725
+    mode: C=O stretch
+    strength: strong
+    specificity: medium
+    notes: Broad O-H ~2500–3300 cm⁻¹ dimer region.
+
+  - label: amide
+    region_min_cm1: 1630
+    region_max_cm1: 1680
+    mode: amide I
+    strength: strong
+    specificity: medium
+    notes: ""
+
+  - label: aromatic
+    region_min_cm1: 1450
+    region_max_cm1: 1600
+    mode: C=C ring stretches
+    strength: medium
+    specificity: medium
+    notes: Out-of-plane bends 650–900 cm⁻¹ for substitution.
+
+  - label: heteroaromatic
+    region_min_cm1: 1400
+    region_max_cm1: 1650
+    mode: ring modes
+    strength: medium
+    specificity: low
+    notes: Overlaps general aromatic region.
+
+  - label: ether
+    region_min_cm1: 1050
+    region_max_cm1: 1150
+    mode: C-O stretch
+    strength: medium
+    specificity: low
+    notes: ""
+
+  - label: aryl_ether
+    region_min_cm1: 1200
+    region_max_cm1: 1280
+    mode: Ar-O-C stretch
+    strength: medium
+    specificity: medium
+    notes: ""
+
+  - label: nitrile
+    region_min_cm1: 2200
+    region_max_cm1: 2260
+    mode: C≡N stretch
+    strength: strong
+    specificity: high
+    notes: ""
+
+  - label: nitro
+    region_min_cm1: 1500
+    region_max_cm1: 1570
+    mode: asymmetric NO₂
+    strength: strong
+    specificity: medium
+    notes: Symmetric ~1350 cm⁻¹.
+
+  - label: nitro_aromatic
+    region_min_cm1: 1500
+    region_max_cm1: 1570
+    mode: NO₂ on aromatic ring
+    strength: strong
+    specificity: medium
+    notes: With aromatic ring bands.
+
+  - label: alkene
+    region_min_cm1: 1620
+    region_max_cm1: 1680
+    mode: C=C stretch
+    strength: medium
+    specificity: medium
+    notes: "Alkene =C-H near 3000-3100 cm-1."
+
+  - label: alkyne
+    region_min_cm1: 2100
+    region_max_cm1: 2260
+    mode: C≡C stretch
+    strength: medium
+    specificity: medium
+    notes: Terminal C≡C-H ~3300 cm⁻¹.
+
+  - label: siloxane
+    region_min_cm1: 1000
+    region_max_cm1: 1150
+    mode: Si-O-Si asymmetric
+    strength: supporting
+    specificity: low
+    notes: "Overlaps C-O, C-O-C, aryl ether, alcohol, ester fingerprint; not sufficient alone for siloxane."
+
+  - label: silane_or_silicone
+    region_min_cm1: 1250
+    region_max_cm1: 1350
+    mode: Si-CH₃ / Si-C
+    strength: medium
+    specificity: medium
+    notes: ""
+
+  - label: alcohol_or_phenol
+    region_min_cm1: 3200
+    region_max_cm1: 3600
+    mode: O-H stretch (broad class)
+    strength: strong
+    specificity: low
+    notes: Broad FG bucket for basic model.
+
+  - label: amine_or_amide
+    region_min_cm1: 3100
+    region_max_cm1: 3500
+    mode: N-H region
+    strength: medium
+    specificity: low
+    notes: Check carbonyl/amide I for amide contribution.
+
+  - label: aliphatic_CH
+    band_id: aliphatic_ch_asym
+    region_min_cm1: 2920
+    region_max_cm1: 2965
+    mode: aliphatic C-H asymmetric stretch
+    strength: supporting
+    specificity: low
+    notes: Local motif; supports organic matrix, not specific alone.
+
+  - label: aliphatic_CH
+    band_id: aliphatic_ch_sym
+    region_min_cm1: 2850
+    region_max_cm1: 2885
+    mode: aliphatic C-H symmetric stretch
+    strength: supporting
+    specificity: low
+    notes: Pair with asymmetric C-H stretch when present.
+
+  - label: aldehyde
+    band_id: aldehydic_ch_fermi
+    region_min_cm1: 2720
+    region_max_cm1: 2820
+    mode: aldehydic C-H / Fermi doublet
+    strength: supporting
+    specificity: low
+    notes: Pair with C=O near 1650-1820; not aromatic C-H at ~3000.
+
+  - label: aromatic_CH
+    band_id: aromatic_ch_stretch
+    region_min_cm1: 3000
+    region_max_cm1: 3100
+    mode: aromatic/sp2 C-H stretch
+    strength: supporting
+    specificity: medium
+    notes: Pair with aromatic C=C near 1450-1600 cm-1.
+
+  - label: silicone_or_siloxane
+    region_min_cm1: 1000
+    region_max_cm1: 1150
+    mode: Si-O-Si
+    strength: supporting
+    specificity: low
+    notes: "Same overlap caveats as siloxane fingerprint band."

@@ -1,0 +1,34 @@
+## Catechol-120-80-9-IR
+
+Edit your interpretation for Catechol-120-80-9-IR.jdx here.
+
+## Nylon_T
+
+Edit your interpretation for Nylon_T.CSV here.
+
+## Benzoic_acid_-_65-85-0-IR
+
+Edit your interpretation for Benzoic acid - 65-85-0-IR.jdx here.
+
+## 1H-Pyrrole-2-carboxylic_acid-634-97-9-IR
+
+Edit your interpretation for 1H-Pyrrole-2-carboxylic acid-634-97-9-IR.jdx here.
+
+## 1H-Indol-5-ol-1953-54-4-IR
+
+Edit your interpretation for 1H-Indol-5-ol-1953-54-4-IR.jdx here.
+
+## Indole_120-72-9-IR
+
+Edit your interpretation for Indole_120-72-9-IR.jdx here.
+
+## Polydopamine_Powder
+
+Edit your interpretation for Polydopamine_Powder.CSV here.
+
+## Dopamine_Powder
+
+Edit your interpretation for Dopamine_Powder.CSV here.
+
+Re-run with:
+  --interpretation-notes reports/reference_snapshots/front/INTERPRETATION_NOTES.txt

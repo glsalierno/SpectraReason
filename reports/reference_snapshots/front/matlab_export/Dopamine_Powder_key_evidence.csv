@@ -1,0 +1,13 @@
+assignment_label,key_bands_cm1,confidence_status,ontology_category,score,notes
+Enamine Region,,Supported,local_motif,0.9968,
+Heterocyclic N O Region,,Supported,local_motif,0.9800,
+N Oxide Confounded Region,,Supported,local_motif,0.9800,
+C O Fingerprint Region,,Supported,local_motif,0.9000,
+C–O-containing,,Supported,fallback,0.9000,
+Nitrile Alkyne Region,,Supported,local_motif,0.8673,
+Unsaturation,,Supported,fallback,0.8673,
+Aromatic Cc Region,,Supported,local_motif,0.8368,
+Nitrogen-containing,,Supported,fallback,0.8368,
+Aromatic system,,Supported,fallback,0.8368,
+Triple-bond region,,Supported,fallback,0.7873,
+Hydroxy-containing,,Supported,fallback,0.7560,

@@ -1,0 +1,33 @@
+peak_position_cm1,peak_height,annotation_text,category,hover_text
+1630.00,1.000000,1630,aromatic,<b>1630 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1630.00,0.993142,1630,aromatic,<b>1630 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1630.00,0.979441,1630,aromatic,<b>1630 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1640.00,0.925311,1640,aromatic,<b>1640 cm⁻¹</b><br>Band: heteroaromatic<br>Category: aromatic
+1620.00,0.754821,1620,aromatic,<b>1620 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1530.00,0.696795,1530,aromatic,<b>1530 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1650.00,0.673900,1650,aromatic,<b>1650 cm⁻¹</b><br>Band: heteroaromatic<br>Category: aromatic
+1540.00,0.632205,1540,aromatic,<b>1540 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1520.00,0.574826,1520,aromatic,<b>1520 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1520.00,0.516390,1520,aromatic,<b>1520 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1660.00,0.450182,1660,other,<b>1660 cm⁻¹</b><br>Local peak (no strong band match)
+1550.00,0.446982,1550,other,<b>1550 cm⁻¹</b><br>Band: amide<br>Category: other
+1660.00,0.430300,1660,other,<b>1660 cm⁻¹</b><br>Local peak (no strong band match)
+1610.00,0.415296,1610,aromatic,<b>1610 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+577.00,0.400082,577,other,<b>577 cm⁻¹</b><br>Local peak (no strong band match)
+3300.00,0.377487,3300,hydroxy,<b>3300 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+3300.00,0.376762,3300,hydroxy,<b>3300 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+1660.00,0.376453,1660,other,<b>1660 cm⁻¹</b><br>Local peak (no strong band match)
+2930.00,0.358019,2930,hydroxy,<b>2930 cm⁻¹</b><br>Band: carboxylic_acid_OH<br>Category: hydroxy
+1610.00,0.357834,1610,aromatic,<b>1610 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1510.00,0.355738,1510,other,<b>1510 cm⁻¹</b><br>Local peak (no strong band match)
+2930.00,0.355220,2930,hydroxy,<b>2930 cm⁻¹</b><br>Band: carboxylic_acid_OH<br>Category: hydroxy
+1610.00,0.353030,1610,aromatic,<b>1610 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+3290.00,0.307990,3290,hydroxy,<b>3290 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+1560.00,0.301652,1560,other,<b>1560 cm⁻¹</b><br>Local peak (no strong band match)
+1270.00,0.291286,1270,c_o,<b>1270 cm⁻¹</b><br>Band: ester<br>Category: c_o
+1560.00,0.289176,1560,other,<b>1560 cm⁻¹</b><br>Local peak (no strong band match)
+1270.00,0.285549,1270,c_o,<b>1270 cm⁻¹</b><br>Band: ester<br>Category: c_o
+2950.00,0.253459,2950,other,<b>2950 cm⁻¹</b><br>Band: aliphatic_CH<br>Category: other
+3320.00,0.248095,3320,hydroxy,<b>3320 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+684.00,0.246924,684,other,<b>684 cm⁻¹</b><br>Local peak (no strong band match)
+727.00,0.240570,727,other,<b>727 cm⁻¹</b><br>Local peak (no strong band match)

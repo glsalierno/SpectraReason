@@ -1,0 +1,13 @@
+{
+  "description": "Higher thresholds; fewer tentative assignments.",
+  "evidence": {
+    "region_signal_frac": 0.10,
+    "min_band_support": 0.10
+  },
+  "label_overrides": {
+    "phenol": { "min_score": 0.42 },
+    "alcohol": { "min_score": 0.36 },
+    "primary_amine": { "min_score": 0.34 },
+    "nitrile": { "min_score": 0.45 }
+  }
+}

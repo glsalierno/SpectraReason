@@ -1,0 +1,18 @@
+{
+  "description": "Stricter phenol vs alcohol: phenol needs aromatic support; alcohol penalized when aromatic is strong.",
+  "evidence": {
+    "region_signal_frac": 0.08
+  },
+  "label_overrides": {
+    "phenol": { "min_score": 0.38 },
+    "alcohol": { "min_score": 0.34 }
+  },
+  "post_rules": {
+    "alcohol_max_if_phenol_aromatic": {
+      "if_label": "phenol",
+      "if_min_score": 0.45,
+      "cap_label": "alcohol",
+      "cap_to": 0.25
+    }
+  }
+}

@@ -1,0 +1,31 @@
+peak_position_cm1,peak_height,annotation_text,category,hover_text
+1215.00,1.000000,1215,c_o,<b>1215 cm⁻¹</b><br>Band: ester<br>Category: c_o
+1147.00,0.960039,1147,c_o,<b>1147 cm⁻¹</b><br>Band: ester<br>Category: c_o
+3405.00,0.933379,3405,hydroxy,<b>3405 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+762.00,0.733836,762,other,<b>762 cm⁻¹</b><br>Local peak (no strong band match)
+1489.00,0.650235,1489,aromatic,<b>1489 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+734.00,0.513105,734,other,<b>734 cm⁻¹</b><br>Local peak (no strong band match)
+851.00,0.415699,851,other,<b>851 cm⁻¹</b><br>Local peak (no strong band match)
+1375.00,0.329134,1375,aromatic,<b>1375 cm⁻¹</b><br>Band: heteroaromatic<br>Category: aromatic
+1625.00,0.313644,1625,aromatic,<b>1625 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+798.00,0.312085,798,other,<b>798 cm⁻¹</b><br>Local peak (no strong band match)
+945.00,0.302343,945,other,<b>945 cm⁻¹</b><br>Local peak (no strong band match)
+1339.00,0.298663,1339,other,<b>1339 cm⁻¹</b><br>Band: nitro<br>Category: other
+610.00,0.293663,610,other,<b>610 cm⁻¹</b><br>Local peak (no strong band match)
+1590.00,0.288451,1590,aromatic,<b>1590 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+3247.00,0.272755,3247,hydroxy,<b>3247 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+1581.00,0.254598,1581,aromatic,<b>1581 cm⁻¹</b><br>Band: aromatic<br>Category: aromatic
+1255.00,0.250517,1255,c_o,<b>1255 cm⁻¹</b><br>Band: ester<br>Category: c_o
+3459.00,0.239987,3459,hydroxy,<b>3459 cm⁻¹</b><br>Band: broad_OH<br>Category: hydroxy
+809.00,0.238247,809,other,<b>809 cm⁻¹</b><br>Local peak (no strong band match)
+507.00,0.223340,507,other,<b>507 cm⁻¹</b><br>Local peak (no strong band match)
+1092.00,0.179122,1092,c_o,<b>1092 cm⁻¹</b><br>Band: ether<br>Category: c_o
+1126.00,0.172287,1126,c_o,<b>1126 cm⁻¹</b><br>Band: ester<br>Category: c_o
+1296.00,0.153222,1296,c_o,<b>1296 cm⁻¹</b><br>Band: aryl_ether<br>Category: c_o
+894.00,0.149175,894,other,<b>894 cm⁻¹</b><br>Local peak (no strong band match)
+3121.00,0.181676,3121,amine,<b>3121 cm⁻¹</b><br>Band: carboxylic_acid_OH<br>Category: amine
+454.00,0.140459,454,other,<b>454 cm⁻¹</b><br>Local peak (no strong band match)
+1065.00,0.091233,1065,c_o,<b>1065 cm⁻¹</b><br>Band: ether<br>Category: c_o
+1417.00,0.089319,1417,other,<b>1417 cm⁻¹</b><br>Local peak (no strong band match)
+425.00,0.069542,425,other,<b>425 cm⁻¹</b><br>Local peak (no strong band match)
+2860.00,0.062922,2860,hydroxy,<b>2860 cm⁻¹</b><br>Band: carboxylic_acid_OH<br>Category: hydroxy

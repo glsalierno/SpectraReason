@@ -1,0 +1,13 @@
+assignment_label,key_bands_cm1,confidence_status,ontology_category,score,notes
+Carbonyl Region,,Supported,local_motif,0.9000,
+Carbonyl-containing,,Supported,fallback,0.9000,
+C O Fingerprint Region,,Supported,local_motif,0.7718,
+C–O-containing,,Supported,fallback,0.7718,
+Heterocyclic N O Region,,Supported,local_motif,0.7648,
+Pyrrole N Oxide Like,,Supported,local_motif,0.7648,
+N Oxide Confounded Region,,Supported,local_motif,0.7648,
+Enamine Region,,Supported,local_motif,0.7552,
+Hydroxy-containing,,Supported,fallback,0.7320,
+Aromatic Cc Region,,Supported,local_motif,0.6848,
+Aromatic system,,Supported,fallback,0.6848,
+Broad Oh Nh Region,,Supported,local_motif,0.6520,

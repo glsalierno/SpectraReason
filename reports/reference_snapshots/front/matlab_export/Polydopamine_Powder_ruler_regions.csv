@@ -1,0 +1,10 @@
+region_id,region_label,lo_cm1,hi_cm1,rel_activity,tier,hover_note
+oh_nh,O–H/N–H,3200,3700,0.6543,strong,Broad O–H / N–H
+aromatic_ch,sp² C–H,3000,3100,0.0822,active,Aromatic/sp² C–H (~3000–3100); not 2800 cm⁻¹
+aliphatic_ch,sp³ C–H,2850,2965,0.0822,active,Aliphatic C–H asymmetric/symmetric
+aldehydic_ch,aldehyde C–H,2720,2820,0.0822,active,Aldehydic C–H / Fermi doublet; pair with C=O for aldehyde
+triple_bond,C≡N/C≡C,2100,2260,0.6132,strong,C≡N/C≡C
+carbonyl,C=O,1650,1820,0.6543,strong,C=O
+unsat_mid,C=C / amide II / N–O,1450,1650,0.6132,strong,"Aromatic C=C, amide II, enamine C=C–N, heterocyclic N–O / N-oxide-like modes; NO₂ asym overlap — paired 1320–1390 cm⁻¹ required for nitro"
+co_fingerprint,C–O / fingerprint,1000,1450,0.6543,strong,C–O / fingerprint
+fingerprint_low,fingerprint,650,1000,0.6543,strong,fingerprint

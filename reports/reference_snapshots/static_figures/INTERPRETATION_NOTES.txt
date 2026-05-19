@@ -1,0 +1,14 @@
+## Catechol-120-80-9-IR
+
+Edit your interpretation for Catechol-120-80-9-IR.jdx here.
+
+## Nylon_T
+
+Edit your interpretation for Nylon_T.CSV here.
+
+## Benzoic_acid_-_65-85-0-IR
+
+Edit your interpretation for Benzoic acid - 65-85-0-IR.jdx here.
+
+Re-run with:
+  --interpretation-notes reports/reference_snapshots/static_figures/INTERPRETATION_NOTES.txt
