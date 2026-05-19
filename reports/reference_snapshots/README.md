@@ -32,7 +32,7 @@ python scripts/release_stabilize.py --snapshots-only
 
 - **Catechol / indole / pyrrole:** aromatic + O–H/N–H; heteroaromatic cautions; no supported nitro from mid-region alone
 - **Nylon:** amide I/II pattern; amide supported when paired bands present
-- **PDA / polydopamine / dopamine powder:** broad O–H/N–H, aromatic; siloxane not supported without Si–O dominance
+- **Pyrrole / heteroaromatic set:** N–H and fingerprint overlap cards in front mode
 - **Benzoic acid:** carboxylic C=O/O–H; not confused with nitro
 
 ## Known ambiguities
