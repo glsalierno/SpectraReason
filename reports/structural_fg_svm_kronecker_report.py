@@ -12,7 +12,7 @@ Run from **FTIR_SVM** root::
     cd FTIR_SVM
     $env:PYTHONPATH = (Get-Location).Path  # FTIR_SVM
     python reports/structural_fg_svm_kronecker_report.py batch \\
-      --inputs Dopamine_Powder.CSV Nylon_T.CSV \\
+      --inputs examples/spectra/Catechol-120-80-9-IR.jdx Nylon_T.CSV \\
       --model ml/runs/struct_fg_v7_pubchem_mordred.joblib \\
       --out-dir reports/svm_kronecker_interactive
 

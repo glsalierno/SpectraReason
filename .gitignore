@@ -38,6 +38,12 @@ node_modules/
 # Proprietary / local-only data
 data/external_sources/raw/
 data/experimental/
+examples/spectra/Dopamine_Powder.*
+examples/spectra/Polydopamine*
+examples/spectra/*pda*
+examples/spectra/*PDA*
+examples/spectra/polydopamine*
+reports_struct_fg_evidence*/
 data/training/*.npz
 data/training/*.meta.json
 data/training/pubchem_structure_cache*.json

@@ -33,7 +33,7 @@ if ~exist(outDir, 'dir')
     mkdir(outDir);
 end
 
-spectrumList = {'Catechol-120-80-9-IR', 'Nylon_T', 'Benzoic_acid_-_65-85-0-IR', '1H-Pyrrole-2-carboxylic_acid-634-97-9-IR', '1H-Indol-5-ol-1953-54-4-IR', 'Indole_120-72-9-IR', 'Polydopamine_Powder', 'Dopamine_Powder'};
+spectrumList = {'Catechol-120-80-9-IR', 'Nylon_T', 'Benzoic_acid_-_65-85-0-IR', '1H-Pyrrole-2-carboxylic_acid-634-97-9-IR', '1H-Indol-5-ol-1953-54-4-IR', 'Indole_120-72-9-IR', 'Pyrrole_109-97-7-IR'};
 
 for si = 1:numel(spectrumList)
     stem = normalizeStem(spectrumList{si});

@@ -55,7 +55,7 @@ def test_explain_one_spectrum():
     from ml.ftir_interpretability import explain_prediction
     from lib.spectrum import load_processed_spectrum
 
-    p = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
+    p = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
     model = _ROOT / "models" / "struct_fg_v7_pubchem_mordred.joblib"
     if not p.is_file() or not model.is_file():
         pytest.skip("example spectrum or model missing")
@@ -71,7 +71,7 @@ def test_robustness_one_spectrum():
     from ml.ftir_robustness import evaluate_robustness_one_spectrum
     from lib.spectrum import load_processed_spectrum
 
-    p = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
+    p = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
     model = _ROOT / "models" / "struct_fg_v7_pubchem_mordred.joblib"
     if not p.is_file() or not model.is_file():
         pytest.skip("example spectrum or model missing")
@@ -111,7 +111,7 @@ def test_pipeline_without_model():
     from ml.ftir_pipeline import run_evidence_first_pipeline
     from lib.spectrum import load_processed_spectrum
 
-    p = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
+    p = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
     if not p.is_file():
         pytest.skip("missing example")
     ps = load_processed_spectrum(p)
@@ -134,7 +134,7 @@ def test_export_csv():
     from lib.spectrum import load_processed_spectrum
     import tempfile
 
-    p = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
+    p = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
     if not p.is_file():
         pytest.skip("missing example")
     ps = load_processed_spectrum(p)
@@ -167,7 +167,7 @@ def test_lean_report_smoke():
     from reports.structural_fg_lean_report import run_batch
     import tempfile
 
-    p = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
+    p = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
     if not p.is_file():
         pytest.skip("missing example")
     with tempfile.TemporaryDirectory() as td:
@@ -182,4 +182,4 @@ def test_lean_report_smoke():
         assert rp.is_file()
         html = rp.read_text(encoding="utf-8")
         assert "Consensus (evidence-first)" in html
-        assert (out / "spec_lean_Dopamine_Powder.png").is_file()
+        assert (out / "spec_lean_Catechol-120-80-9-IR.png").is_file()

@@ -3,11 +3,11 @@
   "issue_count": 0,
   "issues": [],
   "stats": {
-    "canonical_peak_count": 80,
-    "plotted_peak_count": 80,
-    "labeled_peak_count": 80,
-    "evidence_rows_raw": 33,
-    "evidence_rows_deduped": 16,
+    "canonical_peak_count": 11,
+    "plotted_peak_count": 11,
+    "labeled_peak_count": 11,
+    "evidence_rows_raw": 19,
+    "evidence_rows_deduped": 17,
     "label_min_height": 0.05
   }
 }

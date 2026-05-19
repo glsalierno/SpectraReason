@@ -25,7 +25,7 @@ from reports.report_render import (
 )
 from reports.structural_fg_svm_kronecker_report import run_batch
 
-_EXAMPLE = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
+_EXAMPLE = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
 
 
 def _assert_contract(html: str, *, expect_shading: bool, audience: str = "debug") -> None:

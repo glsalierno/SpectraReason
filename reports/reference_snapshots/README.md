@@ -13,8 +13,7 @@ browser without a server.
 | pyrrole_carboxylic | `examples/spectra/1H-Pyrrole-2-carboxylic acid-634-97-9-IR.jdx` | canonical |
 | indol_5_ol | `examples/spectra/1H-Indol-5-ol-1953-54-4-IR.jdx` | canonical |
 | indole | `examples/spectra/Indole_120-72-9-IR.jdx` | canonical |
-| polydopamine_powder | `examples/spectra/Polydopamine_Powder.CSV` | canonical |
-| dopamine_powder | `examples/spectra/Dopamine_Powder.CSV` | canonical |
+| pyrrole | `examples/spectra/Pyrrole_109-97-7-IR.jdx` | canonical |
 
 ## Regenerate
 

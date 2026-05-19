@@ -14,7 +14,7 @@ Run from **FTIR_SVM_v2** root::
 
     $env:PYTHONPATH = (Get-Location).Path
     python reports/structural_fg_lean_report.py batch \\
-      --inputs examples/spectra/Dopamine_Powder.CSV \\
+      --inputs examples/spectra/Catechol-120-80-9-IR.jdx \\
       --out-dir reports/lean_demo
 """
 

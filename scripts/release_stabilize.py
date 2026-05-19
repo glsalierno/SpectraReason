@@ -30,8 +30,7 @@ REFERENCE_SPECTRA: list[tuple[str, str]] = [
     ("pyrrole_carboxylic", str(ROOT / "examples" / "spectra" / "1H-Pyrrole-2-carboxylic acid-634-97-9-IR.jdx")),
     ("indol_5_ol", str(ROOT / "examples" / "spectra" / "1H-Indol-5-ol-1953-54-4-IR.jdx")),
     ("indole", str(ROOT / "examples" / "spectra" / "Indole_120-72-9-IR.jdx")),
-    ("polydopamine_powder", str(ROOT / "examples" / "spectra" / "Polydopamine_Powder.CSV")),
-    ("dopamine_powder", str(ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV")),
+    ("pyrrole", str(ROOT / "examples" / "spectra" / "Pyrrole_109-97-7-IR.jdx")),
 ]
 
 ARCHIVE_CANDIDATES: list[tuple[str, str]] = [

@@ -22,13 +22,9 @@ Edit your interpretation for 1H-Indol-5-ol-1953-54-4-IR.jdx here.
 
 Edit your interpretation for Indole_120-72-9-IR.jdx here.
 
-## Polydopamine_Powder
+## Pyrrole_109-97-7-IR
 
-Edit your interpretation for Polydopamine_Powder.CSV here.
-
-## Dopamine_Powder
-
-Edit your interpretation for Dopamine_Powder.CSV here.
+Edit your interpretation for Pyrrole_109-97-7-IR.jdx here.
 
 Re-run with:
   --interpretation-notes reports/reference_snapshots/front/INTERPRETATION_NOTES.txt

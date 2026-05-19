@@ -1,8 +1,7 @@
 # Example spectra (collaborator-safe)
 
-Files in `examples/spectra/` are **public or literature reference** spectra suitable
-for demos, tests, and reference snapshots. They contain **no proprietary polymer
-powder libraries** and no absolute local paths.
+Files in `examples/spectra/` are **literature / reference** spectra (JCAMP-DX and similar)
+for demos, tests, and reference snapshots. **No lab powder libraries** are committed.
 
 ## Included chemistries
 
@@ -13,14 +12,17 @@ powder libraries** and no absolute local paths.
 | `1H-Indol-5-ol-1953-54-4-IR.jdx` | Heteroaromatic + O–H ambiguity |
 | `Indole_120-72-9-IR.jdx` | Aromatic N–H region |
 | `1H-Pyrrole-2-carboxylic acid-634-97-9-IR.jdx` | Amide / pyrrole overlap |
-| `Nylon_T.CSV` | Amide I/II powder pattern |
-| `Polydopamine_Powder.CSV` | Broad O–H/N–H, aromatic |
 | `Pyrrole_109-97-7-IR.jdx` | Heteroaromatic baseline |
+| `Nylon_T.CSV` | Amide I/II (generic nylon reference) |
+| `DopamineHCl_B6008951-IR.jdx` | Public-style reference JDX (not lab powder CSV) |
+
+## Lab / proprietary data (not in git)
+
+Place local FTIR powder measurements under `data/experimental/` (gitignored), e.g.:
+
+- PDA, polydopamine, or custom polymer ATR/CSV exports
+- Never commit `FTIR_POWDER/` paths or vendor `.SPA` archives
 
 ## Screenshots
 
 Pre-rendered report previews: `docs/assets/screenshots/`.
-
-## Adding your own files
-
-Put **non-shareable** lab data in `data/experimental/` (gitignored), not here.

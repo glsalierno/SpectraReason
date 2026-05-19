@@ -248,7 +248,7 @@ python reports/structural_fg_svm_kronecker_report.py batch \
 
 Optional CSV export (`--export-csv`): consensus, rules long-form, band matches (full scientific record alongside HTML).
 
-**Example (MATLAB-style + static export, FTIR_POWDER):** see `CANONICAL_OUTPUTS.md` and `reports/FIGURES_AND_EXPORT.md`. Typical flags: `--visual-theme matlab --export-static-figures --label-all-above-height 0.05 --show-region-ruler`. Static export writes **separate** `{stem}_spectrum_peaks.png` and `{stem}_region_guide.png` (avoid stacking ruler + spectrum in one slide). MATLAB: `cd` to `matlab_export` and run `make_figures` (collision-aware peak labels; edit font variables at top of script).
+**Example (MATLAB-style + static export):** see `docs/COMMANDS.md`. Typical flags: `--visual-theme matlab --export-static-figures --label-all-above-height 0.05 --show-region-ruler`. Static export writes **separate** `{stem}_spectrum_peaks.png` and `{stem}_region_guide.png`. MATLAB: `cd` to `matlab_export` and run `make_figures`.
 
 ### Static figures and MATLAB post-processing
 
@@ -272,7 +272,7 @@ Batch outputs are self-contained HTML with sidebar navigation. Design audit: `re
 
 ## Software availability
 
-The v4 ontology pipeline, training scripts, trained family/specific models, and report generators are maintained in **`FTIR_SVM_v4/`** (this tree). Legacy v7 artifacts remain under `models/` and `data/training/`. See `context.md`, `CANONICAL_OUTPUTS.md`, and `reports/FIGURES_AND_EXPORT.md` for command lines, artifact paths, canonical front/debug demos (`reports/product_v1_front_demo/`, `reports/product_v1_debug_demo/`), FTIR_POWDER bundles (`reports/ftir_powder_pda_eg_con_new_front/`, `reports/ftir_powder_pda_eg_con_new_matlab/`), and audit reports (`reports/v4_evidence_v2_retraining_audit.md`, `reports/product_v1_design_audit.md`).
+The v4 ontology pipeline, training scripts, trained family/specific models, and report generators are maintained in **SpectraReason** (this tree). Legacy v7 artifacts remain under `models/` and `data/training/`. See `docs/COMMANDS.md`, `docs/REPRODUCIBILITY.md`, and bundled reference snapshots under `reports/reference_snapshots/`. Lab-only powder spectra belong in `data/experimental/` (gitignored), not in the public repo.
 
 ---
 

@@ -13,7 +13,7 @@ Run from **FTIR_SVM** root::
     cd FTIR_SVM
     $env:PYTHONPATH = (Get-Location).Path  # FTIR_SVM
     python reports/kronecker_spectrum_report.py batch \\
-      --inputs Dopamine_Powder.CSV Polydopamine_Powder.CSV \\
+      --inputs examples/spectra/Catechol-120-80-9-IR.jdx Nylon_T.CSV \\
       --out-dir reports/powder_kronecker_sg19 \\
       --sg-window 19 --sg-poly 2 --show-pre-sg-overlay
 """

@@ -55,7 +55,7 @@ def _run(ev: dict) -> dict:
 
 
 def test_infer_atr_from_path() -> None:
-    p = Path("examples/spectra/Dopamine_Powder.CSV")
+    p = Path("examples/spectra/Catechol-120-80-9-IR.jdx")
     assert infer_measurement_mode(p, {}) in ("ATR", "unknown")
     ctx = resolve_atr_context(path="polydopamine_ATR_SCRAPED.CSV", md={})
     assert ctx["mode"] == "ATR"
