@@ -34,12 +34,15 @@ deliberately for experiments.
 | Raw ontology spam | Local motifs / NO₂ regions suppressed in consensus | Full diagnostics including local motifs |
 | Reproducibility block | Collapsed under Technical details | Same JSON block, expanded details |
 
-## Production models (local paths)
+## Production models
 
-Not in git — obtain from maintainer or train per `docs/COMMANDS.md`:
+**Canonical (git):** `data/training/bundled/v4_production/*_latest.joblib`  
+**Runtime paths:** after `./scripts/setup_bundled_artifacts.sh`:
 
 - `ml/runs/struct_fg_family_v4_ontology_latest.joblib`
 - `ml/runs/struct_fg_specific_v4_ontology_latest.joblib`
+
+See [`ML_ARTIFACTS.md`](ML_ARTIFACTS.md).
 
 ## Config paths (structure only)
 

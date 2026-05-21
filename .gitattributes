@@ -23,3 +23,5 @@
 *.pdf binary
 *.joblib filter=lfs diff=lfs merge=lfs -text
 *.npz filter=lfs diff=lfs merge=lfs -text
+data/training/bundled/**/pubchem*.json filter=lfs diff=lfs merge=lfs -text
+data/training/bundled/pubchem_structure_cache_v7.json filter=lfs diff=lfs merge=lfs -text

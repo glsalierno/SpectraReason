@@ -61,7 +61,7 @@
 
 ## Upgrade notes for collaborators
 
-- Place joblibs under `ml/runs/` locally (not in git).
+- Run `git lfs pull`, then `./scripts/setup_bundled_artifacts.sh` to install joblibs into `ml/runs/`.
 - Regenerate reference snapshots: `python scripts/release_stabilize.py --snapshots-only`
 - Run `python -m pytest ml/tests/ -q` after pulling
 

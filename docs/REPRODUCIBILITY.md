@@ -31,12 +31,22 @@ Optional dev: `pip install -r requirements-dev.txt`.
 
 See [`PRODUCTION_DEFAULTS.md`](PRODUCTION_DEFAULTS.md).
 
-## Production models (local artifacts)
+## Production models (bundled in git)
 
-Not committed to git. Expected paths after training or maintainer handoff:
+Canonical copies live under `data/training/bundled/v4_production/`. After clone, install
+into `ml/runs/` (expected by reports):
+
+```bash
+./scripts/setup_bundled_artifacts.sh   # Windows: .\scripts\setup_bundled_artifacts.ps1
+```
+
+Installed paths:
 
 - `ml/runs/struct_fg_family_v4_ontology_latest.joblib`
 - `ml/runs/struct_fg_specific_v4_ontology_latest.joblib`
+
+Training matrices (same feature space): `ds_v4_*_spectral_evidence_v2_nist.npz` in bundled folder.
+See [`ML_ARTIFACTS.md`](ML_ARTIFACTS.md).
 
 Verify hashes:
 
@@ -74,7 +84,8 @@ Implementation: `reports/reproducibility_meta.py`.
 ## Model / retraining philosophy
 
 - **Rules are primary** for supported vs tentative calls in production (`fusion-mode annotate`).
-- **ML retrains** require NIST index + PubChem cache locally; outputs stay in `ml/runs/`.
+- **ML retrains** can use bundled NPZ + PubChem JSON without NIST; full rebuilds need local NIST SQLite.
+- **Retrain outputs** go to `ml/runs/` (gitignored scratch); bundled `*_latest.joblib` is the frozen release.
 - **Experiments** never overwrite `*_latest.joblib` without maintainer review (`--no-update-latest`).
 - **Deconv models** under `ml/runs/experiments/` are not production-frozen.
 

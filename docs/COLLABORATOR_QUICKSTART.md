@@ -40,15 +40,36 @@ export PYTHONPATH="$(pwd)"
 # Windows: $env:PYTHONPATH = (Get-Location).Path
 ```
 
-## 3. Production ML artifacts (local only)
+## 3. Git LFS and bundled ML artifacts
 
-Trained models are **not** in git. Obtain family/specific joblibs from the
-maintainer or train locally (see `docs/COMMANDS.md`) and place at:
+Large training files use **Git LFS**. After clone:
 
-- `ml/runs/struct_fg_family_v4_ontology_latest.joblib`
-- `ml/runs/struct_fg_specific_v4_ontology_latest.joblib`
+```bash
+git lfs install
+git lfs pull
+```
 
-Rules-only smoke reports work without joblibs (`--ml-mode none`).
+Install production models into `ml/runs/` (one-time):
+
+```powershell
+# Windows
+.\scripts\setup_bundled_artifacts.ps1
+```
+
+```bash
+# Linux/macOS
+./scripts/setup_bundled_artifacts.sh
+```
+
+This copies from `data/training/bundled/v4_production/`:
+
+- `struct_fg_family_v4_ontology_latest.joblib`
+- `struct_fg_specific_v4_ontology_latest.joblib`
+- Homogenized NIST training matrices (`*.npz`) and PubChem cache
+
+**v7 legacy (Mordred):** `data/training/bundled/v7_mordred/` — see [`docs/ML_ARTIFACTS.md`](ML_ARTIFACTS.md).
+
+Rules-only smoke reports work without running the setup script (`--ml-mode none`).
 
 ## 4. Run the demo front-facing report
 

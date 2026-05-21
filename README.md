@@ -3,11 +3,56 @@
 **Evidence-first, ambiguity-aware FTIR interpretation** with explainable spectroscopy
 reports and optional machine-learning advisory layers.
 
-SpectraReason is **not** a black-box classifier. It separates what the spectrum
-*shows locally* from what chemistry *might mean*, and only then forms a cautious
-consensus interpretation.
+SpectraReason is **not** a black-box classifier. Rules and band evidence drive
+supported vs tentative calls; calibrated SVMs add **advisory** scores (`fusion-mode annotate`).
 
 > **Local motifs ≠ functional groups ≠ consensus interpretation**
+
+---
+
+## What you get out of the box
+
+This repository includes **ready-to-use ML artifacts** (no NIST rebuild required for
+inference or retrain-on-bundled-data):
+
+| Bundle | Location | Use |
+|--------|----------|-----|
+| **Production SVMs** | `data/training/bundled/v4_production/*.joblib` | Front/debug reports with `--ml-mode both` |
+| **v4 training matrices** | `data/training/bundled/v4_production/*.npz` | ~15.6k NIST spectra, **434-D** `spectral+evidence_v2` |
+| **PubChem cache** | `data/training/bundled/v4_production/pubchem_train_writable.json` | Structures used for SMARTS weak labels at build time |
+| **Legacy v7 (Mordred)** | `data/training/bundled/v7_mordred/` | **303-D** spectral+RDKit+Mordred NPZ + v7 joblib |
+
+**Not in git:** NIST SQLite index (~GB). Optional local symlink: `data/external/nist_index.sqlite`.
+
+Details: [`data/training/bundled/README.md`](data/training/bundled/README.md) · [`docs/ML_ARTIFACTS.md`](docs/ML_ARTIFACTS.md)
+
+---
+
+## Quickstart (with ML)
+
+```bash
+git clone https://github.com/glsalierno/SpectraReason.git
+cd SpectraReason
+python -m venv .venv
+source .venv/bin/activate          # Windows: .\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+export PYTHONPATH="$(pwd)"         # Windows: $env:PYTHONPATH = (Get-Location).Path
+
+# Install bundled joblibs into ml/runs/ (expected paths for reports)
+./scripts/setup_bundled_artifacts.sh   # Windows: .\scripts\setup_bundled_artifacts.ps1
+
+python reports/structural_fg_svm_kronecker_report.py batch \
+  --inputs examples/spectra/Catechol-120-80-9-IR.jdx \
+  --ontology v4 --guardrails v3 --ml-mode both \
+  --family-model ml/runs/struct_fg_family_v4_ontology_latest.joblib \
+  --specific-model ml/runs/struct_fg_specific_v4_ontology_latest.joblib \
+  --fusion-mode annotate --ml-guardrails strict \
+  --report-style product_v1 --report-audience front \
+  --visual-theme matlab --show-region-ruler \
+  --out reports/demo_front/REPORT.html
+```
+
+Open `reports/demo_front/REPORT.html` in a browser.
 
 ---
 
@@ -15,13 +60,13 @@ consensus interpretation.
 
 | Layer | Role |
 |-------|------|
-| **Local motifs** | Regional spectral patterns (e.g. nitrile/alkyne window activity) |
-| **Functional groups** | Rule- and band-supported chemical assignments |
+| **Local motifs** | Regional spectral patterns (windows, not final FG calls) |
+| **Functional groups** | Rule- and band-supported assignments |
 | **Consensus** | Spectroscopist-facing summary with explicit ambiguity |
-| **ML advisory** | Optional calibrated SVM scores; **annotate** mode does not override rules |
+| **ML advisory** | Optional OvR SVM probabilities; **annotate** does not override rules |
 
-Production defaults: ontology **v4**, guardrails **v3**, fusion **annotate**,
-`product_v1` front-facing reports. See [`docs/PRODUCTION_DEFAULTS.md`](docs/PRODUCTION_DEFAULTS.md).
+Production defaults: ontology **v4**, guardrails **v3**, fusion **annotate**.  
+See [`docs/PRODUCTION_DEFAULTS.md`](docs/PRODUCTION_DEFAULTS.md).
 
 ---
 
@@ -38,14 +83,12 @@ flowchart LR
     EV[Evidence v2 features]
     RL[Rules + v3 guardrails]
   end
-  subgraph optional [Optional ML]
-    FAM[Family SVM]
-    SPE[Specific SVM]
+  subgraph optional [Bundled ML]
+    FAM[Family SVM joblib]
+    SPE[Specific SVM joblib]
   end
   subgraph out [Reports]
     FRONT[Front-facing HTML]
-    DEBUG[Debug / audit HTML]
-    STATIC[MATLAB-style static export]
   end
   CSV --> PRE --> EV
   BL --> EV --> RL
@@ -54,49 +97,18 @@ flowchart LR
   RL --> FRONT
   FAM -. annotate .-> FRONT
   SPE -. annotate .-> FRONT
-  RL --> DEBUG
-  FRONT --> STATIC
 ```
 
-**Interactive features:** local peak hover context, FTIR region ruler (1450–1650 cm⁻¹
-amide II / C=C / N–O ambiguity), optional pseudo-Voigt deconvolution for experiments.
+**v4 SVM inputs (434-D):** 14 spectral window stats + 419 evidence-v2 columns + structure flag.  
+**v7 legacy (303-D):** adds RDKit + Mordred descriptor blocks — see `data/training/bundled/v7_mordred/`.
 
 ---
 
 ## Screenshot
 
-Front-facing report (Catechol example, MATLAB theme):
-
 ![SpectraReason front-facing report](docs/assets/screenshots/front_report.png)
 
-Interactive bundle: [`reports/reference_snapshots/front/REPORT.html`](reports/reference_snapshots/front/REPORT.html)  
-More previews: [`docs/assets/screenshots/`](docs/assets/screenshots/).
-
----
-
-## Quickstart
-
-```bash
-git clone <private-repo-url> SpectraReason
-cd SpectraReason
-python -m venv .venv
-source .venv/bin/activate          # Windows: .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-export PYTHONPATH="$(pwd)"         # Windows: $env:PYTHONPATH = (Get-Location).Path
-
-# Demo front-facing report (rules-only if ML joblibs not present locally)
-python reports/structural_fg_svm_kronecker_report.py batch \
-  --inputs examples/spectra/Catechol-120-80-9-IR.jdx \
-  --ontology v4 --guardrails v3 --ml-mode both \
-  --family-model ml/runs/struct_fg_family_v4_ontology_latest.joblib \
-  --specific-model ml/runs/struct_fg_specific_v4_ontology_latest.joblib \
-  --fusion-mode annotate --ml-guardrails strict \
-  --report-style product_v1 --report-audience front \
-  --visual-theme matlab --show-region-ruler \
-  --out reports/demo_front/REPORT.html
-```
-
-Full command reference: [`docs/COMMANDS.md`](docs/COMMANDS.md) · Onboarding: [`docs/COLLABORATOR_QUICKSTART.md`](docs/COLLABORATOR_QUICKSTART.md).
+Interactive bundle: [`reports/reference_snapshots/front/REPORT.html`](reports/reference_snapshots/front/REPORT.html)
 
 ---
 
@@ -104,41 +116,39 @@ Full command reference: [`docs/COMMANDS.md`](docs/COMMANDS.md) · Onboarding: [`
 
 ```
 SpectraReason/
-├── ml/                    # ontology, evidence, rules, guardrails, training
-├── reports/               # HTML report generators + reference_snapshots/
-├── lib/                   # spectrum I/O and peak utilities
-├── configs/               # rule presets (conservative, sensitive, …)
-├── examples/spectra/      # collaborator-safe demo spectra
-├── data/benchmark_sets/   # manifests only (no proprietary libraries)
-├── data/external_sources/ # ingestion stubs + provenance docs
-├── docs/                  # reproducibility, commands, benchmarks
-├── tools/                 # maintenance utilities (vulture whitelist)
-└── tests/                 # → ml/tests/
+├── data/training/bundled/   # ★ joblibs, NPZ matrices, PubChem cache (in git)
+├── ml/                     # ontology, evidence, rules, train/predict code
+├── reports/                # HTML generators + reference_snapshots/
+├── examples/spectra/       # demo spectra (public/literature)
+├── configs/                # rule presets
+├── docs/                   # commands, reproducibility, ML_ARTIFACTS
+├── scripts/                # setup_bundled_artifacts.* 
+└── ml/tests/
 ```
-
-**Not committed:** NIST SQLite indexes, trained `.joblib` / `.npz`, experimental
-powder libraries, or generated report clutter (`reports/_archive/`, local `ml/runs/`).
 
 ---
 
-## Reproducibility
-
-Each `product_v1` HTML report embeds a collapsible reproducibility JSON block
-(ontology version, band-library hash, model SHA-256 prefixes, package versions).
-
-See [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) and regenerate reference bundles:
+## Retrain on bundled data (no NIST)
 
 ```bash
-python scripts/release_stabilize.py --snapshots-only
+python -m ml.structural_fg_svm train \
+  --dataset-prefix data/training/bundled/v4_production/ds_v4_family_spectral_evidence_v2_nist \
+  --ontology v4 --model-kind family --out ml/runs
 ```
+
+Full NIST rebuild: [`docs/COMMANDS.md`](docs/COMMANDS.md) · [`docs/EXTERNAL_DATASETS.md`](docs/EXTERNAL_DATASETS.md)
 
 ---
 
-## External data & benchmarks
+## Documentation map
 
-- Ingestion framework and legal boundaries: [`docs/EXTERNAL_DATASETS.md`](docs/EXTERNAL_DATASETS.md)
-- Confounder-aware benchmark philosophy: [`docs/BENCHMARK_PHILOSOPHY.md`](docs/BENCHMARK_PHILOSOPHY.md)
-- Release summary (v5): [`docs/RELEASE_NOTES_v5.md`](docs/RELEASE_NOTES_v5.md)
+| Doc | Topic |
+|-----|--------|
+| [`docs/COLLABORATOR_QUICKSTART.md`](docs/COLLABORATOR_QUICKSTART.md) | Clone, setup, demo |
+| [`docs/ML_ARTIFACTS.md`](docs/ML_ARTIFACTS.md) | Models, NPZ layouts, v4 vs v7 |
+| [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) | Hashes, frozen defaults |
+| [`METHODS.md`](METHODS.md) | Methods text / feature dimensions |
+| [`data/README_DATA.md`](data/README_DATA.md) | Data policy |
 
 ---
 
@@ -147,23 +157,20 @@ python scripts/release_stabilize.py --snapshots-only
 | Item | Notes |
 |------|--------|
 | **Python** | 3.10+ (3.11 recommended on Windows) |
-| **RDKit** | Required for SMARTS weak labels and structure-aware training |
+| **RDKit** | Required for SMARTS label rebuilds; optional for report-only |
 | **Plotly** | Interactive reports |
-| **Kaleido** | Optional static Plotly export (`pip install kaleido`) |
-| **MATLAB** | Optional; reads CSV exports from `matlab_export/` |
+| **Git LFS** | Large `.npz` / PubChem JSON use LFS — run `git lfs install` after clone |
 
-Details: `requirements.txt`, `requirements-dev.txt`, optional `environment.yml`.
+`requirements.txt` · optional `environment.yml`
 
 ---
 
 ## Contributing
 
-Private collaborators: read [`CONTRIBUTING.md`](CONTRIBUTING.md) and
-[`SECURITY.md`](SECURITY.md). Do not commit proprietary spectra or licensed libraries.
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md). Lab-only spectra stay in `data/experimental/` (gitignored).
 
 ---
 
 ## Citation
 
-When publishing, cite the repository commit hash from the report metadata block and
-document production flags from `docs/PRODUCTION_DEFAULTS.md`. Methods detail: [`METHODS.md`](METHODS.md).
+Cite the git commit from report metadata and `docs/PRODUCTION_DEFAULTS.md`. Methods: [`METHODS.md`](METHODS.md).

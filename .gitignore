@@ -21,9 +21,7 @@ htmlcov/
 # Node (if any tooling added later)
 node_modules/
 
-# ML / data artifacts (never commit proprietary or large binaries)
-*.joblib
-*.npz
+# ML / data artifacts (default: ignore scratch; bundled release is tracked)
 *.sqlite
 *.db
 *.zip
@@ -35,6 +33,13 @@ node_modules/
 *.hdf5
 *.parquet
 
+# Ignore generic ML binaries except bundled release trees
+*.joblib
+!data/training/bundled/**/*.joblib
+
+*.npz
+!data/training/bundled/**/*.npz
+
 # Proprietary / local-only data
 data/external_sources/raw/
 data/experimental/
@@ -44,13 +49,18 @@ examples/spectra/*pda*
 examples/spectra/*PDA*
 examples/spectra/polydopamine*
 reports_struct_fg_evidence*/
-data/training/*.npz
-data/training/*.meta.json
-data/training/pubchem_structure_cache*.json
-models/*.meta.json
-ml/runs/
-models/*.joblib
-models/*.npz
+
+# Local ml/runs scratch (bundled copies installed via setup script)
+ml/runs/*
+!ml/runs/.gitkeep
+
+# Legacy data/training root copies (use data/training/bundled/ instead)
+data/training/*
+!data/training/bundled/
+!data/training/bundled/**
+
+models/
+!models/.gitkeep
 
 # Generated reports and archives
 reports/_archive/
