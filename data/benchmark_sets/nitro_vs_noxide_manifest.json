@@ -1,0 +1,212 @@
+{
+  "manifest_version": "1.0",
+  "name": "nitro_vs_noxide",
+  "problem": "nitro",
+  "description": "Targeted confounder expansion for nitro classification.",
+  "true_positive_classes": [
+    "nitro_positive"
+  ],
+  "hard_negative_classes": [
+    "nitro_hn_n_oxide",
+    "nitro_hn_nitroso",
+    "nitro_hn_heteroaromatic",
+    "nitro_hn_enamine"
+  ],
+  "supporting_classes": [],
+  "expected_behavior": "Separate nitro (symmetric NO\u2082 pair) from N-oxide/nitroso/heteroaromatic false positives.",
+  "known_ambiguities": [
+    "Aromatic nitro vs heterocyclic N-oxide in 1300\u20131600 cm\u207b\u00b9",
+    "Nitroso N=O vs nitro asymmetric stretch"
+  ],
+  "classes": [
+    {
+      "class_id": "nitro_positive",
+      "role": "true_positive",
+      "label": "True nitro (R\u2013NO\u2082)",
+      "example_compounds": [
+        "nitrobenzene",
+        "p-nitrotoluene",
+        "2,4-dinitrotoluene",
+        "nitromethane",
+        "m-nitroaniline"
+      ],
+      "tag_rules": [
+        "nitro"
+      ],
+      "keyword_any": [
+        "nitro",
+        "dinitro",
+        "trinitro"
+      ],
+      "smarts": "[N+](=O)[O-]",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "\u03bd_as(NO\u2082) ~1520\u20131550, \u03bd_s ~1340\u20131370; aromatic NO\u2082 vs aliphatic shift.",
+      "minimum_count": 10,
+      "ingested_count": 0,
+      "gap": 10,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "nitro_hn_n_oxide",
+      "role": "hard_negative",
+      "label": "Heterocyclic N-oxide",
+      "example_compounds": [
+        "pyridine 1-oxide",
+        "pyridazine 1-oxide",
+        "quinoline 1-oxide",
+        "morpholine n-oxide"
+      ],
+      "tag_rules": [
+        "n_oxide",
+        "heteroaromatic"
+      ],
+      "keyword_any": [
+        "n-oxide",
+        "n oxide",
+        "pyridine n-oxide",
+        "pyridazine"
+      ],
+      "smarts": "[n+][O-]",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "N\u2013O stretch overlaps nitro region; lacks symmetric NO\u2082 pair.",
+      "minimum_count": 8,
+      "ingested_count": 0,
+      "gap": 8,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "nitro_hn_nitroso",
+      "role": "hard_negative",
+      "label": "Nitroso (R\u2013N=O)",
+      "example_compounds": [
+        "nitrosobenzene",
+        "cyclohexanone oxime",
+        "nitrosodimethylamine"
+      ],
+      "tag_rules": [
+        "nitroso"
+      ],
+      "keyword_any": [
+        "nitroso",
+        "n-oxo"
+      ],
+      "smarts": "[NX2]=O",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "N=O ~1450\u20131500 cm\u207b\u00b9; weaker than nitro; no second NO stretch.",
+      "minimum_count": 5,
+      "ingested_count": 0,
+      "gap": 5,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "nitro_hn_heteroaromatic",
+      "role": "hard_negative",
+      "label": "Heteroaromatic (no nitro)",
+      "example_compounds": [
+        "pyridine",
+        "pyrrole",
+        "imidazole",
+        "indole",
+        "furan",
+        "thiophene"
+      ],
+      "tag_rules": [
+        "heteroaromatic"
+      ],
+      "keyword_any": [
+        "pyridin",
+        "pyrrol",
+        "imidaz",
+        "indol",
+        "furan",
+        "thiophen",
+        "oxazole"
+      ],
+      "smarts": "a1naaaa1",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "Ring breathing 1400\u20131600; can crowd fingerprint near nitro bands.",
+      "minimum_count": 10,
+      "ingested_count": 5,
+      "gap": 5,
+      "sample_spectra": [
+        {
+          "reference_id": "dc84ecab25c864e337f3b49193c18d7155108042",
+          "title": "Indol-5-ol",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "4dd056515871fbb48b3b6345eda368ece4319ccf",
+          "title": "Pyrrole-2-carboxylic acid",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "51d7c17361c3e0d4d75d5e6e5c8fbdd875822d2f",
+          "title": "Indole",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "cc652e7e57fce4ffc5d1846c8639ad9c0563eb61",
+          "title": "3-INDOLE ACETIC ACID",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "6e205af38d5f8f73ec3a483129c4ed9a5b855a4f",
+          "title": "Pyrrole",
+          "source_id": "examples_reference"
+        }
+      ]
+    },
+    {
+      "class_id": "nitro_hn_enamine",
+      "role": "hard_negative",
+      "label": "Enamine / vinylogous amine",
+      "example_compounds": [
+        "morpholine enamine",
+        "dimethylaminocrotonitrile"
+      ],
+      "tag_rules": [
+        "enamine"
+      ],
+      "keyword_any": [
+        "enamine",
+        "enamino",
+        "vinylogous"
+      ],
+      "smarts": "[CX3]=[CX3][NX3]",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "C=C + C\u2013N; no NO\u2082; N\u2013H if secondary enamine.",
+      "minimum_count": 5,
+      "ingested_count": 0,
+      "gap": 5,
+      "sample_spectra": []
+    }
+  ],
+  "ingested_spectra": [],
+  "coverage": {
+    "nitro_positive": {
+      "ingested": 0,
+      "minimum": 10,
+      "gap": 10
+    },
+    "nitro_hn_n_oxide": {
+      "ingested": 0,
+      "minimum": 8,
+      "gap": 8
+    },
+    "nitro_hn_nitroso": {
+      "ingested": 0,
+      "minimum": 5,
+      "gap": 5
+    },
+    "nitro_hn_heteroaromatic": {
+      "ingested": 5,
+      "minimum": 10,
+      "gap": 5
+    },
+    "nitro_hn_enamine": {
+      "ingested": 0,
+      "minimum": 5,
+      "gap": 5
+    }
+  }
+}

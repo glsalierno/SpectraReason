@@ -11,7 +11,9 @@ _REPO = Path(__file__).resolve().parents[1]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-PDA = _REPO / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
+PDA = Path(
+    r"c:\Users\glsal\OneDrive - UMass Lowell\TURI\Research\AI\AT-10\PDA\FTIR_POWDER\pda_eg_con_new.CSV"
+)
 OUT = _REPO / "reports" / "report_stabilization_proof"
 
 

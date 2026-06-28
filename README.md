@@ -3,6 +3,9 @@
 **Evidence-first, ambiguity-aware FTIR interpretation** with explainable spectroscopy
 reports and optional machine-learning advisory layers.
 
+> **Branch `v5`:** latest report/curation/intensity-mode stack — see [`docs/V5_BRANCH.md`](docs/V5_BRANCH.md).  
+> **`main`:** stable collaborator snapshot (May 2026).
+
 SpectraReason is **not** a black-box classifier. Rules and band evidence drive
 supported vs tentative calls; calibrated SVMs add **advisory** scores (`fusion-mode annotate`).
 

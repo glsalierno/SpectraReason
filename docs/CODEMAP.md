@@ -1,6 +1,6 @@
-# Code ownership map (SpectraReason)
+# Code ownership map (FTIR_SVM_v5)
 
-**Root:** repository root (`PYTHONPATH=.` when running commands)
+**Root:** `c:\Users\glsal\OneDrive - UMass Lowell\TURI\Research\AI\AT-10\PDA\chunks\FTIR_SVM_v5`
 
 ---
 
@@ -85,6 +85,15 @@
 | `reports/kronecker_pi_layout.py` | Kronecker stem panels |
 | `reports/v4_evidence_report.py` | Band maps, justification helpers |
 | `reports/static_figure_export.py` | Matplotlib presentation PNGs (spectrum + region guide) |
+| `reports/paper_ftir_figures.py` | Manuscript transmittance + normalized absorbance figures |
+| `reports/manuscript_report.py` | Concise `MANUSCRIPT_REPORT.html` |
+| `reports/interactive_curation.py` | Plotly peak curation UI (toggle, manual peaks, marker checkbox) |
+| `reports/label_overrides.py` | `{stem}_label_overrides.json` schema and merge |
+| `reports/peak_snap.py` | Manual peak snap to local extrema |
+| `reports/discussion_regions.py` | Default/custom wavenumber ranges (`ranges_config.json`) |
+| `reports/range_editor.py` | HTML range editor + chunk export links |
+| `reports/chunk_export.py` | Spectral chunk singles, stacks, collages, chunk data |
+| `reports/region_stack_export.py` | Shared stack trace prep; wrapper to `chunk_export` |
 | `reports/annotation_layout.py` | Ruler row heights, collision-aware peak labels |
 | `reports/matlab_visual_theme.py` | MATLAB theme CSS, CSV export, `make_figures.m` |
 | `reports/reproducibility_meta.py` | Git/model/package metadata JSON in Technical details |
@@ -150,6 +159,7 @@
 |------|------|
 | `CANONICAL_OUTPUTS.md` | Production path map |
 | `reports/FIGURES_AND_EXPORT.md` | Static PNG + MATLAB figure workflow |
+| `reports/CURATION_AND_CHUNKS.md` | Manuscript figures, curation, custom ranges, chunk export |
 | `METHODS.md` | Manuscript-style methods |
 | `context.md` | Living progress log |
 | `docs/COMMANDS.md` | Copy-paste commands |

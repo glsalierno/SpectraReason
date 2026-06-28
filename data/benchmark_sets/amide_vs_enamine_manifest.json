@@ -1,0 +1,205 @@
+{
+  "manifest_version": "1.0",
+  "name": "amide_vs_enamine",
+  "problem": "amide",
+  "description": "Targeted confounder expansion for amide classification.",
+  "true_positive_classes": [
+    "amide_positive"
+  ],
+  "hard_negative_classes": [
+    "amide_hn_enamine",
+    "amide_hn_pyrrole",
+    "amide_hn_imide",
+    "amide_hn_conjugated_amide"
+  ],
+  "supporting_classes": [],
+  "classes": [
+    {
+      "class_id": "amide_positive",
+      "role": "true_positive",
+      "label": "Primary/secondary/tertiary amide",
+      "example_compounds": [
+        "acetamide",
+        "benzamide",
+        "caprolactam",
+        "nylon 6",
+        "dmf"
+      ],
+      "tag_rules": [
+        "amide"
+      ],
+      "keyword_any": [
+        "amide",
+        "lactam",
+        "nylon"
+      ],
+      "smarts": "C(=O)N",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "Amide I ~1650\u20131680, Amide II ~1550; polymer broadening in nylon.",
+      "minimum_count": 10,
+      "ingested_count": 0,
+      "gap": 10,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "amide_hn_enamine",
+      "role": "hard_negative",
+      "label": "Enamine",
+      "example_compounds": [
+        "morpholine enamine",
+        "pyrrolidine enamine"
+      ],
+      "tag_rules": [
+        "enamine"
+      ],
+      "keyword_any": [
+        "enamine",
+        "enamino"
+      ],
+      "smarts": "[CX3]=[CX3][NX3]",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "C=C + N lone pair; weak or absent amide I carbonyl.",
+      "minimum_count": 8,
+      "ingested_count": 0,
+      "gap": 8,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "amide_hn_pyrrole",
+      "role": "hard_negative",
+      "label": "Pyrrole / indole N\u2013H",
+      "example_compounds": [
+        "pyrrole",
+        "indole",
+        "carbazole",
+        "1H-indol-5-ol"
+      ],
+      "tag_rules": [
+        "heteroaromatic"
+      ],
+      "keyword_any": [
+        "pyrrol",
+        "indol",
+        "carbazol"
+      ],
+      "smarts": "[nH]1cccc1",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "N\u2013H broad ~3200\u20133400; no amide I; heteroaromatic fingerprint.",
+      "minimum_count": 8,
+      "ingested_count": 5,
+      "gap": 3,
+      "sample_spectra": [
+        {
+          "reference_id": "dc84ecab25c864e337f3b49193c18d7155108042",
+          "title": "Indol-5-ol",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "4dd056515871fbb48b3b6345eda368ece4319ccf",
+          "title": "Pyrrole-2-carboxylic acid",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "51d7c17361c3e0d4d75d5e6e5c8fbdd875822d2f",
+          "title": "Indole",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "cc652e7e57fce4ffc5d1846c8639ad9c0563eb61",
+          "title": "3-INDOLE ACETIC ACID",
+          "source_id": "examples_reference"
+        },
+        {
+          "reference_id": "6e205af38d5f8f73ec3a483129c4ed9a5b855a4f",
+          "title": "Pyrrole",
+          "source_id": "examples_reference"
+        }
+      ]
+    },
+    {
+      "class_id": "amide_hn_imide",
+      "role": "hard_negative",
+      "label": "Imide / cyclic imide",
+      "example_compounds": [
+        "phthalimide",
+        "succinimide",
+        "n-hydroxysuccinimide"
+      ],
+      "tag_rules": [
+        "amide"
+      ],
+      "keyword_any": [
+        "imide",
+        "succinimide",
+        "phthalimide"
+      ],
+      "smarts": "C(=O)NC(=O)",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "Twin carbonyls; amide I often split/broadened vs simple amide.",
+      "minimum_count": 5,
+      "ingested_count": 0,
+      "gap": 5,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "amide_hn_conjugated_amide",
+      "role": "hard_negative",
+      "label": "Conjugated / aromatic amide",
+      "example_compounds": [
+        "nicotinamide",
+        "acrylamide",
+        "cinnamamide"
+      ],
+      "tag_rules": [
+        "amide",
+        "heteroaromatic"
+      ],
+      "keyword_any": [
+        "nicotinamide",
+        "acrylamide",
+        "cinnam"
+      ],
+      "smarts": "C(=O)Nc",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "Lower amide I frequency; aromatic bands overlap amide II.",
+      "minimum_count": 5,
+      "ingested_count": 0,
+      "gap": 5,
+      "sample_spectra": []
+    }
+  ],
+  "expected_behavior": "Separate amide I/II from enamine, pyrrole N\u2013H, and imide twin carbonyls.",
+  "known_ambiguities": [
+    "Imide vs simple amide carbonyl splitting",
+    "Pyrrole N\u2013H vs secondary amine N\u2013H",
+    "Conjugated amide lowered amide I"
+  ],
+  "ingested_spectra": [],
+  "coverage": {
+    "amide_positive": {
+      "ingested": 0,
+      "minimum": 10,
+      "gap": 10
+    },
+    "amide_hn_enamine": {
+      "ingested": 0,
+      "minimum": 8,
+      "gap": 8
+    },
+    "amide_hn_pyrrole": {
+      "ingested": 5,
+      "minimum": 8,
+      "gap": 3
+    },
+    "amide_hn_imide": {
+      "ingested": 0,
+      "minimum": 5,
+      "gap": 5
+    },
+    "amide_hn_conjugated_amide": {
+      "ingested": 0,
+      "minimum": 5,
+      "gap": 5
+    }
+  }
+}

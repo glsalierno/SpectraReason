@@ -1,0 +1,30 @@
+{
+  "name": "phenol_vs_alcohol",
+  "description": "Phenolic O\u2013H vs aliphatic alcohol O\u2013H broad bands.",
+  "expected_behavior": "Phenol shows broader 3200\u20133600 cm\u207b\u00b9 envelope with aromatic fingerprint; alcohol narrower.",
+  "known_ambiguities": [
+    "Enols",
+    "carboxylic acids with O\u2013H"
+  ],
+  "spectra": [
+    {
+      "reference_id": "ddb4e3dda4d84837ae321f2b2d0736f35d98e9ab",
+      "source_path": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\examples\\spectra\\Catechol-120-80-9-IR.jdx",
+      "title": "Catechol",
+      "tags": [
+        "phenol"
+      ],
+      "source_id": "examples_reference"
+    },
+    {
+      "reference_id": "5e0bb5dacd013853146cf77bfbb4d3206d124056",
+      "source_path": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\examples\\spectra\\DopamineHCl_B6008951-IR.jdx",
+      "title": "4-(2-Aminoethyl)catechol, hydrochloride",
+      "tags": [
+        "phenol"
+      ],
+      "source_id": "examples_reference"
+    }
+  ],
+  "count": 2
+}

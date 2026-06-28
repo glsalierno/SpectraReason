@@ -156,7 +156,7 @@ def test_report_justification_includes_spectral_fields():
     from ml.ftir_report_sections import justification_cards_html
     from lib.spectrum import load_processed_spectrum
 
-    p = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
+    p = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
     if not p.is_file():
         pytest.skip("example spectrum missing")
     ps = load_processed_spectrum(p)
@@ -170,7 +170,7 @@ def test_evidence_only_pipeline_still():
     from ml.ftir_pipeline import run_evidence_first_pipeline
     from lib.spectrum import load_processed_spectrum
 
-    p = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
+    p = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
     if not p.is_file():
         pytest.skip("missing example")
     ps = load_processed_spectrum(p)

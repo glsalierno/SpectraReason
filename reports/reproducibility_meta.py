@@ -69,15 +69,6 @@ def band_library_version(repo_root: Path | None = None) -> str:
     return "unknown"
 
 
-def _publish_model_path(path: Path, *, anonymize: bool, repo_root: Path) -> str:
-    if anonymize:
-        return path.name
-    try:
-        return path.resolve().relative_to(repo_root.resolve()).as_posix()
-    except ValueError:
-        return path.name
-
-
 def build_run_context(
     *,
     paths_line: list[str] | str,
@@ -85,7 +76,6 @@ def build_run_context(
     specific_model: Path | None = None,
     legacy_model: Path | None = None,
     repo_root: Path | None = None,
-    anonymize_paths: bool = False,
     extra: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     root = repo_root or Path(__file__).resolve().parents[1]
@@ -106,7 +96,7 @@ def build_run_context(
     ):
         if p and Path(p).is_file():
             rp = Path(p).resolve()
-            models[key] = _publish_model_path(rp, anonymize=anonymize_paths, repo_root=root)
+            models[key] = str(rp)
             models[f"{key}_sha256"] = _sha256_file(rp)
     if models:
         ctx["models"] = models

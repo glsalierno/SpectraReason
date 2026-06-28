@@ -1,7 +1,6 @@
-# Production defaults (SpectraReason v5)
+# Production defaults (FTIR_SVM_v5)
 
-Frozen **product** settings for reproducible front-facing reports. Override only
-deliberately for experiments.
+Frozen **product** settings for reproducible front-facing reports. Override only deliberately for experiments.
 
 | Setting | Production value | Notes |
 |---------|------------------|-------|
@@ -25,8 +24,8 @@ deliberately for experiments.
 
 ## Front vs debug
 
-| | **Front** (`--report-audience front`) | **Debug** (`--report-audience debug`) |
-|---|--------------------------------------|-------------------------------------|
+| | **Front** (`--report-audience front`) | **Debug** (`--report-audience debug` or `--report-density audit`) |
+|---|--------------------------------------|---------------------------------------------------------------------|
 | Summary | Spectroscopist prose + consensus per spectrum | Full interpretation panel |
 | Tables | Key evidence + front consensus table | Generic summary + full assignment tables |
 | Peak labels | ~10 prioritized | More labels; peak-picking summary in details |
@@ -34,19 +33,14 @@ deliberately for experiments.
 | Raw ontology spam | Local motifs / NO₂ regions suppressed in consensus | Full diagnostics including local motifs |
 | Reproducibility block | Collapsed under Technical details | Same JSON block, expanded details |
 
-## Production models
+## Production models (do not relocate without updating all references)
 
-**Canonical (git):** `data/training/bundled/v4_production/*_latest.joblib`  
-**Runtime paths:** after `./scripts/setup_bundled_artifacts.sh`:
-
-- `ml/runs/struct_fg_family_v4_ontology_latest.joblib`
-- `ml/runs/struct_fg_specific_v4_ontology_latest.joblib`
-
-See [`ML_ARTIFACTS.md`](ML_ARTIFACTS.md).
+- `c:\Users\glsal\OneDrive - UMass Lowell\TURI\Research\AI\AT-10\PDA\chunks\FTIR_SVM_v5\ml\runs\struct_fg_family_v4_ontology_latest.joblib`
+- `c:\Users\glsal\OneDrive - UMass Lowell\TURI\Research\AI\AT-10\PDA\chunks\FTIR_SVM_v5\ml\runs\struct_fg_specific_v4_ontology_latest.joblib`
 
 ## Config paths (structure only)
 
-- `configs/rule_presets/` — conservative, sensitive, phenol_alcohol_strict
-- `configs/production/` — pinned YAML/JSON presets (future CLI wiring)
+- `configs/production/` — pinned YAML/JSON presets (future)
 - `configs/experiments/` — non-production sweeps
-- `ml/runs/experiments/` — dated training outputs (gitignored)
+- `ml/runs/production/` — symlink/copy target for promoted joblibs (optional)
+- `ml/runs/experiments/` — dated training outputs

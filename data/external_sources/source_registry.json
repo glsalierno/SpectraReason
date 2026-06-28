@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "updated": "2026-05-18",
+  "sources": [
+    {
+      "source_id": "sdbs_aist",
+      "source_name": "SDBS (AIST Japan)",
+      "url": "https://sdbs.db.aist.go.jp",
+      "license": "SDBS terms of use — free for research with citation; no bulk redistribution",
+      "redistribution_allowed": false,
+      "commercial_restrictions": "Verify AIST terms for commercial use",
+      "citation": "National Institute of Advanced Industrial Science and Technology (AIST), Spectral Database for Organic Compounds (SDBS).",
+      "access_date": "2026-05-18",
+      "ingestion_status": "adapter_ready",
+      "ingestion_script": "ml/external/import_sdbs.py",
+      "processed_output": "data/experimental/sdbs_ir_index.sqlite",
+      "raw_data_path": "data/external_sources/raw/sdbs/",
+      "spectrum_count_estimate": 0,
+      "notes": "User must download JCAMP manually. FTIR focus: heteroaromatics, nitro, amides, phenols. No automated scraping."
+    },
+    {
+      "source_id": "open_polymer_atr",
+      "source_name": "Open polymer / ATR FTIR (Zenodo & teaching sets)",
+      "url": "https://zenodo.org/search?q=polymer%20FTIR%20ATR",
+      "license": "Per-record (often CC BY 4.0) — verify before redistribution",
+      "redistribution_allowed": true,
+      "commercial_restrictions": "Check individual Zenodo DOI",
+      "citation": "See DOI on each Zenodo deposit",
+      "access_date": "2026-05-18",
+      "ingestion_status": "adapter_ready",
+      "ingestion_script": "ml/external/import_open_polymer_ftir.py",
+      "processed_output": "data/experimental/open_polymer_ir_index.sqlite",
+      "raw_data_path": "data/external_sources/raw/open_polymer/",
+      "spectrum_count_estimate": 0,
+      "notes": "Silicone/siloxane, nylon, PE, coatings. Place JCAMP under raw/ and optional CSV under raw/csv/."
+    },
+    {
+      "source_id": "raman_open_database",
+      "source_name": "Raman Open Database (ROD)",
+      "url": "https://www.raman-spectroscopy.org/RamanOpenDatabase",
+      "license": "Open database terms on site — primarily Raman; FTIR where available",
+      "redistribution_allowed": true,
+      "commercial_restrictions": "Check ROD license per spectrum",
+      "citation": "Raman Open Database contributors",
+      "access_date": "2026-05-18",
+      "ingestion_status": "planned",
+      "ingestion_script": "ml/external/import_jcamp_folder.py",
+      "processed_output": "data/experimental/rod_index.sqlite",
+      "spectrum_count_estimate": 0,
+      "notes": "Secondary priority; Raman useful for cross-checks. Use JCAMP adapter when FTIR files obtained."
+    },
+    {
+      "source_id": "user_jcamp",
+      "source_name": "User-owned / licensed JCAMP library",
+      "url": null,
+      "license": "User responsibility",
+      "redistribution_allowed": false,
+      "commercial_restrictions": "Depends on user license",
+      "citation": "User-provided",
+      "access_date": "2026-05-18",
+      "ingestion_status": "adapter_ready",
+      "ingestion_script": "ml/external/import_jcamp_folder.py",
+      "processed_output": "data/experimental/user_jcamp_index.sqlite",
+      "spectrum_count_estimate": 0,
+      "notes": "Plugin: --library-path DIR --library-source jcamp. For locally licensed KnowItAll/Wiley exports the user may use privately — never commit proprietary files."
+    },
+    {
+      "source_id": "examples_reference",
+      "source_name": "FTIR_SVM_v5 example spectra",
+      "url": null,
+      "license": "Project examples (NIST-style JDX in repo)",
+      "redistribution_allowed": false,
+      "commercial_restrictions": "N/A",
+      "citation": "FTIR_SVM_v5 examples/",
+      "access_date": "2026-05-18",
+      "ingestion_status": "validated",
+      "ingestion_script": "ml/external/import_jcamp_folder.py",
+      "processed_output": "data/experimental/examples_index.sqlite",
+      "spectrum_count_estimate": 16,
+      "notes": "Used for pipeline validation only."
+    },
+    {
+      "source_id": "nistchemdata",
+      "source_name": "NIST Chemistry WebBook (NistChemData)",
+      "url": "https://github.com/usnistgov/NistChemData",
+      "license": "Public domain (US Government work) — see NIST disclaimer",
+      "redistribution_allowed": true,
+      "commercial_restrictions": "None under NIST disclaimer",
+      "citation": "NIST Standard Reference Database",
+      "access_date": "2026-05-18",
+      "ingestion_status": "production_frozen",
+      "ingestion_script": "../NIST/reference_libraries/nistchemdata.py",
+      "processed_output": "chunks/NIST/reference_libraries/nistchemdata_ir_index_v7_fresh.sqlite",
+      "spectrum_count_estimate": 90000,
+      "notes": "Production v4 training source — do not merge into experimental without explicit promotion workflow."
+    }
+  ],
+  "disallowed_sources": [
+    "Wiley KnowItAll bulk scrape",
+    "Sadtler proprietary redistribution",
+    "Commercial database mirroring without license"
+  ]
+}

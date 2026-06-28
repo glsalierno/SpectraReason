@@ -1,0 +1,10 @@
+{
+  "name": "ATR_artifacts",
+  "description": "ATR baseline distortion and contact effects.",
+  "expected_behavior": "Evidence pipeline should tolerate baseline curvature; guardrails flag moisture-like bands.",
+  "known_ambiguities": [
+    "Strong carbonyl ATR shifts"
+  ],
+  "spectra": [],
+  "count": 0
+}

@@ -1,0 +1,56 @@
+{
+  "name": "crowded_fingerprint",
+  "description": "Dense fingerprint overlap (polymers, heteroaromatics).",
+  "expected_behavior": "Peak picking remains stable; deconv optional.",
+  "known_ambiguities": [
+    "Any high-DoF organic solid"
+  ],
+  "spectra": [
+    {
+      "reference_id": "dc84ecab25c864e337f3b49193c18d7155108042",
+      "source_path": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\examples\\spectra\\1H-Indol-5-ol-1953-54-4-IR.jdx",
+      "title": "Indol-5-ol",
+      "tags": [
+        "heteroaromatic"
+      ],
+      "source_id": "examples_reference"
+    },
+    {
+      "reference_id": "4dd056515871fbb48b3b6345eda368ece4319ccf",
+      "source_path": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\examples\\spectra\\1H-Pyrrole-2-carboxylic acid-634-97-9-IR.jdx",
+      "title": "Pyrrole-2-carboxylic acid",
+      "tags": [
+        "heteroaromatic"
+      ],
+      "source_id": "examples_reference"
+    },
+    {
+      "reference_id": "51d7c17361c3e0d4d75d5e6e5c8fbdd875822d2f",
+      "source_path": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\examples\\spectra\\Indole_120-72-9-IR.jdx",
+      "title": "Indole",
+      "tags": [
+        "heteroaromatic"
+      ],
+      "source_id": "examples_reference"
+    },
+    {
+      "reference_id": "cc652e7e57fce4ffc5d1846c8639ad9c0563eb61",
+      "source_path": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\examples\\spectra\\Indoleacetic acid-87-51-4-IR.jdx",
+      "title": "3-INDOLE ACETIC ACID",
+      "tags": [
+        "heteroaromatic"
+      ],
+      "source_id": "examples_reference"
+    },
+    {
+      "reference_id": "6e205af38d5f8f73ec3a483129c4ed9a5b855a4f",
+      "source_path": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\examples\\spectra\\Pyrrole_109-97-7-IR.jdx",
+      "title": "Pyrrole",
+      "tags": [
+        "heteroaromatic"
+      ],
+      "source_id": "examples_reference"
+    }
+  ],
+  "count": 5
+}

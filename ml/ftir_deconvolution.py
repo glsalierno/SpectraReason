@@ -7,7 +7,7 @@ Conservative fitting in diagnostic windows only — not a replacement for eviden
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np

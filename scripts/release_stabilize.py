@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SpectraReason production release stabilization helper.
+FTIR_SVM_v4 production release stabilization helper.
 
 Creates folders, reference snapshots, archive manifest + moves, vulture audit,
 and release_stabilization_audit.md. Safe to re-run (skips existing snapshots unless --force).
@@ -30,7 +30,11 @@ REFERENCE_SPECTRA: list[tuple[str, str]] = [
     ("pyrrole_carboxylic", str(ROOT / "examples" / "spectra" / "1H-Pyrrole-2-carboxylic acid-634-97-9-IR.jdx")),
     ("indol_5_ol", str(ROOT / "examples" / "spectra" / "1H-Indol-5-ol-1953-54-4-IR.jdx")),
     ("indole", str(ROOT / "examples" / "spectra" / "Indole_120-72-9-IR.jdx")),
-    ("pyrrole", str(ROOT / "examples" / "spectra" / "Pyrrole_109-97-7-IR.jdx")),
+    ("polydopamine_powder", str(ROOT / "examples" / "spectra" / "Polydopamine_Powder.CSV")),
+    (
+        "pda_eg",
+        r"c:\Users\glsal\OneDrive - UMass Lowell\TURI\Research\AI\AT-10\PDA\FTIR_POWDER\pda_eg_con_new.CSV",
+    ),
 ]
 
 ARCHIVE_CANDIDATES: list[tuple[str, str]] = [
@@ -90,7 +94,7 @@ def _run_report(
         subtle_model_path=PROD_SPEC if PROD_SPEC.is_file() else None,
         out_path=out,
         page_title=f"Reference snapshots ({audience})",
-        subtitle="SpectraReason production defaults",
+        subtitle="FTIR_SVM_v4 production defaults",
         max_peaks=80,
         hover_top_fg=8,
         ml_mode="both" if PROD_FAM.is_file() else "none",
@@ -107,7 +111,6 @@ def _run_report(
         export_static_figures=export_static,
         static_out=static_out,
         rules_config={"ontology": "v4"},
-        anonymize_metadata=True,
     )
 
 
@@ -221,41 +224,36 @@ def write_reference_readme() -> Path:
     lines = [
         "# Reference snapshots (production defaults)",
         "",
-        "Bundled HTML examples for **SpectraReason** production settings. Open in a",
-        "browser without a server.",
+        f"Workspace: `{ROOT}`",
         "",
         "## Spectra",
         "",
-        "| ID | Relative path | Role |",
-        "|----|---------------|------|",
+        "| ID | Path | Role |",
+        "|----|------|------|",
     ]
     for sid, p in REFERENCE_SPECTRA:
-        rel = Path(p)
-        try:
-            rel = rel.relative_to(ROOT)
-        except ValueError:
-            pass
-        lines.append(f"| {sid} | `{rel.as_posix()}` | canonical |")
+        lines.append(f"| {sid} | `{p}` | canonical |")
     lines += [
         "",
-        "## Regenerate",
+        "## Commands",
         "",
-        "```bash",
-        "export PYTHONPATH=\"$(pwd)\"",
+        "```powershell",
+        f'Set-Location "{ROOT}"',
+        "$env:PYTHONPATH = (Get-Location).Path",
         "python scripts/release_stabilize.py --snapshots-only",
         "```",
         "",
         "## Outputs",
         "",
-        "- Front: `reports/reference_snapshots/front/REPORT.html`",
-        "- Debug: `reports/reference_snapshots/debug/REPORT.html`",
-        "- Static figures: `reports/reference_snapshots/static_figures/`",
+        f"- Front: `{ROOT / 'reports/reference_snapshots/front/REPORT.html'}`",
+        f"- Debug: `{ROOT / 'reports/reference_snapshots/debug/REPORT.html'}`",
+        f"- Static figures: `{ROOT / 'reports/reference_snapshots/static_figures/'}`",
         "",
         "## Expected qualitative behavior",
         "",
         "- **Catechol / indole / pyrrole:** aromatic + O–H/N–H; heteroaromatic cautions; no supported nitro from mid-region alone",
         "- **Nylon:** amide I/II pattern; amide supported when paired bands present",
-        "- **Pyrrole / heteroaromatic set:** N–H and fingerprint overlap cards in front mode",
+        "- **PDA / polydopamine / pda_eg:** broad O–H/N–H, aromatic; siloxane not supported without Si–O dominance",
         "- **Benzoic acid:** carboxylic C=O/O–H; not confused with nitro",
         "",
         "## Known ambiguities",
@@ -294,12 +292,7 @@ def write_release_audit(
         f"|-------|------|------------------|",
     ]
     for label, p in (("family", PROD_FAM), ("specific", PROD_SPEC)):
-        rel = p
-        try:
-            rel = p.relative_to(ROOT)
-        except ValueError:
-            pass
-        body.append(f"| {label} | `{rel.as_posix()}` | `{_sha256_file(p)}` |")
+        body.append(f"| {label} | `{p}` | `{_sha256_file(p)}` |")
     body += [
         "",
         "## Documentation created/updated",
@@ -329,7 +322,7 @@ def write_release_audit(
         "",
         "## Vulture",
         "",
-        f"See `reports/vulture_dead_code_audit.md` and `reports/vulture_raw_output.txt`.",
+        f"See `{vulture_md}` and `reports/vulture_raw_output.txt`.",
         "",
         "## Files deleted in this pass",
         "",

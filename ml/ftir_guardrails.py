@@ -787,6 +787,7 @@ def apply_v3_guardrails(
     *,
     min_band_support: float = 0.08,
     ontology: str | None = None,
+    suppress_nitro_reporting: bool = False,
 ) -> dict[str, Any]:
     """
     Mutates assignment entries in place with v3 fields; returns ambiguity + diagnostics.
@@ -955,7 +956,8 @@ def apply_v3_guardrails(
             }
         )
 
-    apply_nitro_noxide_confounder_guardrails(assignments, evidence, min_band_support=min_band_support)
+    if not suppress_nitro_reporting:
+        apply_nitro_noxide_confounder_guardrails(assignments, evidence, min_band_support=min_band_support)
     apply_amide_overlap_guardrails(assignments, evidence, min_band_support=min_band_support)
     apply_silicon_soft_gates(assignments, evidence, min_band_support=min_band_support)
     _apply_si_o_overlap_motif_gate(assignments, evidence, min_band_support=min_band_support)

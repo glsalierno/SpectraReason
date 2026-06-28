@@ -12,7 +12,7 @@ Run from **FTIR_SVM** root::
     cd FTIR_SVM
     $env:PYTHONPATH = (Get-Location).Path  # FTIR_SVM
     python reports/structural_fg_svm_kronecker_report.py batch \\
-      --inputs examples/spectra/Catechol-120-80-9-IR.jdx Nylon_T.CSV \\
+      --inputs Dopamine_Powder.CSV Nylon_T.CSV \\
       --model ml/runs/struct_fg_v7_pubchem_mordred.joblib \\
       --out-dir reports/svm_kronecker_interactive
 
@@ -39,6 +39,7 @@ from ml.ftir_evidence import build_local_hover_context, format_peak_marker_hover
 from ml.ftir_peak_picking import (
     QUALITY_VISUAL,
     peaks_for_display,
+    peaks_for_kronecker,
     peaks_for_label,
 )
 from ml.ftir_band_library import load_band_library
@@ -63,18 +64,17 @@ from ml.structural_fg_svm import predict_proba_row
 
 
 def _path_for_publish(p: Path, *, anonymize: bool) -> str:
-    """Basename when anonymized; else repo-relative POSIX path when possible."""
+    """Full resolved path for local runs; basename only when building shareable artifacts."""
     if anonymize:
         return p.name
-    root = Path(__file__).resolve().parents[1]
-    try:
-        return p.resolve().relative_to(root.resolve()).as_posix()
-    except ValueError:
-        return p.name
+    return str(p.resolve())
 
 
 def _metadata_for_path(path: Path) -> dict[str, Any]:
     """Same heuristics as ``structural_fg_svm_report`` (CAS, formula, halide mask hints)."""
+    prov_sidecar = path.with_suffix(path.suffix + ".provenance.json")
+    if not prov_sidecar.is_file():
+        prov_sidecar = path.with_name(path.name + ".provenance.json")
     stem = path.stem
     title = stem.replace("_", " ")
     md: dict[str, Any] = {"title": title, "name": stem, "xunits": "1/CM"}
@@ -91,6 +91,15 @@ def _metadata_for_path(path: Path) -> dict[str, Any]:
         md.setdefault("sample_type", "powder")
     if "atr" in low or "scraped" in low:
         md.setdefault("measurement_mode", "ATR")
+    if prov_sidecar.is_file():
+        try:
+            import json as _json
+
+            extra = _json.loads(prov_sidecar.read_text(encoding="utf-8"))
+            if isinstance(extra, dict):
+                md.update(extra)
+        except Exception:
+            pass
     return md
 
 _SHADE_COLORS: tuple[str, ...] = (
@@ -248,9 +257,14 @@ def _build_stacked_interactive_figure(
     ruler_frac = 0.14
     if use_ruler:
         from ml.ftir_region_ruler import FTIR_RULER_REGIONS
+        from ml.report_suppression import nitro_reporting_suppressed
         from reports.annotation_layout import plan_ruler_row_layouts, ruler_subplot_height_fraction
 
-        _, ruler_weight = plan_ruler_row_layouts(FTIR_RULER_REGIONS, front=is_front)
+        _, ruler_weight = plan_ruler_row_layouts(
+            FTIR_RULER_REGIONS,
+            front=is_front,
+            suppress_nitro_reporting=nitro_reporting_suppressed(pipeline),
+        )
         ruler_frac = ruler_subplot_height_fraction(
             n_regions=len(FTIR_RULER_REGIONS),
             total_line_weight=ruler_weight,
@@ -354,6 +368,7 @@ def _build_stacked_interactive_figure(
 
     if use_ruler and ruler_row > 0 and pipeline.get("evidence"):
         from ml.ftir_region_ruler import add_ftir_region_ruler
+        from ml.report_suppression import nitro_reporting_suppressed
 
         fig_meta["ruler_activities"] = add_ftir_region_ruler(
             fig,
@@ -363,6 +378,7 @@ def _build_stacked_interactive_figure(
             row=ruler_row,
             col=1,
             front_mode=is_front,
+            suppress_nitro_reporting=nitro_reporting_suppressed(pipeline),
         )
 
     shade_names: list[str] = []
@@ -668,10 +684,12 @@ def _build_stacked_interactive_figure(
                 col=1,
             )
     elif kron_row > 0:
+        xref = "x domain" if kron_row == 1 else f"x{kron_row} domain"
+        yref = "y domain" if kron_row == 1 else f"y{kron_row} domain"
         fig.add_annotation(
             text="No peaks picked",
-            xref=f"x{kron_row} domain",
-            yref=f"y{kron_row} domain",
+            xref=xref,
+            yref=yref,
             x=0.5,
             y=0.5,
             showarrow=False,
@@ -791,6 +809,9 @@ def write_interactive_report_html(
     visual_theme: str = "default",
     export_static_figures: bool = False,
     editable_text: bool = False,
+    extra_css: str = "",
+    extra_body_html: str = "",
+    extra_script: str = "",
 ) -> Path:
     out_path = out_path.resolve()
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -870,7 +891,9 @@ summary { cursor: pointer; font-weight: 600; color: #334155; }
     body_parts: list[str] = [
         "<!doctype html><html><head><meta charset='utf-8'/>",
         f"<title>{html.escape(page_title)}</title>",
-        f"<style>{css}</style></head><body class='{body_class}'>",
+        f"<style>{css}</style>",
+        extra_css,
+        f"</head><body class='{body_class}'>",
         "<div class='layout'>",
         "<nav id='sidebar'>",
         nav_report,
@@ -954,6 +977,10 @@ summary { cursor: pointer; font-weight: 600; color: #334155; }
         from reports.front_facing_report import EDITABLE_TEXT_SCRIPT
 
         body_parts.append(EDITABLE_TEXT_SCRIPT)
+    if extra_body_html:
+        body_parts.append(extra_body_html)
+    if extra_script:
+        body_parts.append(extra_script)
     body_parts.append("</div></main></div></body></html>")
 
     out_path.write_text("".join(body_parts), encoding="utf-8")
@@ -1055,6 +1082,36 @@ def run_batch(
     static_format: str = "png",
     static_dpi: int = 300,
     static_out: Path | None = None,
+    export_paper_figures: bool = False,
+    paper_figure_modes: tuple[str, ...] = ("transmittance", "normalized_absorbance"),
+    paper_label_style: str = "horizontal-leader",
+    paper_report_style: str = "both",
+    paper_formats: tuple[str, ...] = ("png", "svg", "pdf"),
+    max_paper_peak_labels: int = 10,
+    paper_out: Path | None = None,
+    min_peak_prominence: float = 0.04,
+    min_peak_height: float = 0.05,
+    min_peak_distance_cm1: float = 20.0,
+    ignore_label_ranges: tuple[str, ...] | None = None,
+    use_shoulder_detection: bool = False,
+    override_file: Path | None = None,
+    export_spectrum_feedback: bool = True,
+    export_interactive_curation: bool = False,
+    export_region_stacks: bool = False,
+    regions_file: Path | None = None,
+    export_chunk_data: bool = True,
+    export_chunk_collage: bool = True,
+    label_overrides_dir: Path | None = None,
+    save_label_overrides: bool = True,
+    apply_label_overrides: bool = False,
+    interactive_png_export: bool = True,
+    show_peak_markers: bool = False,
+    allow_apparent_transmittance: bool = False,
+    force_intensity_mode: str | None = None,
+    apparent_transmittance_label: str = "Apparent Transmittance (%)",
+    offset_gap: float = 0.15,
+    stack_modes: tuple[str, ...] = ("normalized_absorbance", "transmittance"),
+    region_labels: str = "selected",
     matlab_export_dir: Path | None = None,
     editable_text: bool | None = None,
     interpretation_notes: Path | None = None,
@@ -1180,6 +1237,29 @@ def run_batch(
     if export_static_figures:
         paths_line.append(f"static_format={static_format}")
         paths_line.append(f"static_dpi={int(static_dpi)}")
+    if export_paper_figures:
+        paths_line.append("export_paper_figures=on")
+        paths_line.append(f"paper_figure_modes={','.join(paper_figure_modes)}")
+        paths_line.append(f"max_paper_peak_labels={int(max_paper_peak_labels)}")
+        paths_line.append(f"paper_formats={','.join(paper_formats)}")
+        paths_line.append(f"min_peak_prominence={float(min_peak_prominence):.3f}")
+        paths_line.append(f"min_peak_height={float(min_peak_height):.3f}")
+        paths_line.append(f"min_peak_distance_cm1={float(min_peak_distance_cm1):.1f}")
+        if ignore_label_ranges:
+            paths_line.append(f"ignore_label_ranges={','.join(ignore_label_ranges)}")
+        if use_shoulder_detection:
+            paths_line.append("use_shoulder_detection=on")
+        if override_file:
+            paths_line.append(f"override_file={_path_for_publish(override_file, anonymize=anonymize_metadata)}")
+        if export_spectrum_feedback:
+            paths_line.append("export_spectrum_feedback=on")
+    if export_interactive_curation:
+        paths_line.append("export_interactive_curation=on")
+    if export_region_stacks:
+        paths_line.append("export_region_stacks=on")
+        paths_line.append(f"offset_gap={float(offset_gap):.2f}")
+    if apply_label_overrides:
+        paths_line.append("apply_label_overrides=on")
     if show_region_ruler is False:
         paths_line.append("region_ruler=off")
     elif show_region_ruler is True or (show_region_ruler is None and style_key == "product_v1"):
@@ -1205,7 +1285,6 @@ def run_batch(
         family_model=Path(basic_model_path) if basic_model_path else None,
         specific_model=Path(subtle_model_path) if subtle_model_path else None,
         legacy_model=Path(model_path) if model_path else None,
-        anonymize_paths=anonymize_metadata,
         extra={
             "ontology": "v4",
             "guardrails_mode": guardrails_mode,
@@ -1232,6 +1311,25 @@ def run_batch(
     summary_rows: list[dict[str, Any]] = []
     matlab_stems: list[str] = []
     presentation_files: list[str] = []
+    paper_manifests: list[dict[str, Any]] = []
+    paper_out_dir = paper_out or (out_path.parent / "presentation" / "paper_figures")
+    paper_override_store: dict[str, Any] | None = None
+    if export_paper_figures and override_file:
+        from reports.paper_peak_overrides import load_override_store
+
+        paper_override_store = load_override_store(Path(override_file))
+    from reports.paper_peak_selection import parse_ignore_label_ranges
+
+    paper_ignore_ranges = parse_ignore_label_ranges(
+        list(ignore_label_ranges) if ignore_label_ranges else None
+    )
+    curation_html_global = ""
+    region_stacks_manifest: dict[str, Any] | None = None
+    label_ov_dir = (
+        label_overrides_dir.resolve()
+        if label_overrides_dir
+        else out_path.parent
+    )
     static_out_dir = (
         static_out.resolve()
         if static_out
@@ -1493,6 +1591,94 @@ def run_batch(
             )
             fig_meta["static_export"] = static_result
             presentation_files.extend(static_result.get("files") or [])
+        paper_figures_html = ""
+        curation_html = ""
+        paper_manifest: dict[str, Any] | None = None
+        if export_paper_figures:
+            from reports.paper_ftir_figures import (
+                PaperFigureConfig,
+                build_paper_figures_section_html,
+                export_paper_figures_for_spectrum,
+            )
+
+            _modes = tuple(
+                m
+                for m in paper_figure_modes
+                if m in ("transmittance", "normalized_absorbance")
+            ) or ("transmittance", "normalized_absorbance")
+            _fmts = tuple(f for f in paper_formats if f in ("png", "svg", "pdf")) or (
+                "png",
+                "svg",
+                "pdf",
+            )
+            pcfg = PaperFigureConfig(
+                modes=_modes,  # type: ignore[arg-type]
+                formats=_fmts,
+                max_peak_labels=int(max_paper_peak_labels),
+                label_style=(
+                    paper_label_style
+                    if paper_label_style in ("horizontal-leader",)
+                    else "horizontal-leader"
+                ),  # type: ignore[arg-type]
+                dpi=int(static_dpi or 300),
+                peak_sensitivity=str(peak_sensitivity),
+                min_peak_prominence=float(min_peak_prominence),
+                min_peak_height=float(min_peak_height),
+                min_peak_distance_cm1=float(min_peak_distance_cm1),
+                ignore_label_ranges=list(paper_ignore_ranges),
+                use_shoulder_detection=bool(use_shoulder_detection),
+                override_file=Path(override_file) if override_file else None,
+                export_spectrum_feedback=bool(export_spectrum_feedback),
+                label_overrides_dir=label_ov_dir,
+                apply_label_overrides=bool(apply_label_overrides),
+                save_label_overrides=bool(save_label_overrides),
+                show_peak_markers=bool(show_peak_markers),
+                allow_apparent_transmittance=bool(allow_apparent_transmittance),
+                force_intensity_mode=force_intensity_mode,  # type: ignore[arg-type]
+                apparent_transmittance_label=str(apparent_transmittance_label),
+            )
+            paper_manifest = export_paper_figures_for_spectrum(
+                p,
+                paper_out_dir,
+                config=pcfg,
+                pipeline=pipeline,
+                override_store=paper_override_store,
+            )
+            paper_manifests.append(paper_manifest)
+            for flist in (paper_manifest.get("figures") or {}).values():
+                presentation_files.extend(flist)
+            if str(paper_report_style).lower() in ("both", "product", "full"):
+                paper_figures_html = build_paper_figures_section_html(
+                    paper_manifest,
+                    report_dir=out_path.parent,
+                )
+        if export_interactive_curation:
+            from reports.interactive_curation import export_interactive_curation_for_spectrum
+            from reports.paper_peak_selection import PaperPeakSelectionConfig
+
+            sel_cfg = PaperPeakSelectionConfig(
+                min_prominence=float(min_peak_prominence),
+                min_height=float(min_peak_height),
+                min_distance_cm1=float(min_peak_distance_cm1),
+                max_labels=int(max_paper_peak_labels),
+                ignore_label_ranges=list(paper_ignore_ranges),
+            )
+            cur = export_interactive_curation_for_spectrum(
+                p,
+                report_dir=out_path.parent,
+                overrides_dir=label_ov_dir,
+                selection_config=sel_cfg,
+                apply_saved_overrides=True,
+                save_auto_overrides=bool(save_label_overrides),
+                allow_apparent_transmittance=bool(allow_apparent_transmittance),
+                force_intensity_mode=force_intensity_mode,  # type: ignore[arg-type]
+                apparent_transmittance_label=str(apparent_transmittance_label),
+            )
+            curation_html = cur.get("html", "")
+            if paper_manifest is None:
+                paper_manifest = {"stem": cur.get("stem"), "curation": cur}
+            else:
+                paper_manifest["curation"] = cur
         if export_static_figures or theme_key == "matlab":
             stem = _safe_stem(ps.name)
             matlab_stems.append(stem)
@@ -1554,16 +1740,23 @@ def run_batch(
             "n_diagnostic_peaks": ev_sum.get("n_diagnostic_peaks"),
             "n_weak_peaks": ev_sum.get("n_weak_peaks"),
         }
-        meta_line = json.dumps(
-            {
-                **{k: md.get(k) for k in ("title", "name", "cas", "formula", "xunits") if md.get(k)},
-                "guardrails": gr,
-                "ml_guardrails": str(ml_guardrails),
-                "ontology": pipeline.get("ontology"),
-                "peak_picking": peak_picking_meta,
-            },
-            sort_keys=True,
-        )
+        meta_payload: dict[str, Any] = {
+            **{k: md.get(k) for k in ("title", "name", "cas", "formula", "xunits") if md.get(k)},
+            "guardrails": gr,
+            "ml_guardrails": str(ml_guardrails),
+            "ontology": pipeline.get("ontology"),
+            "peak_picking": peak_picking_meta,
+        }
+        if str(audience or "").lower() == "debug" or density_key == "audit":
+            try:
+                from ml.external.provenance import provenance_summary
+
+                prov = provenance_summary(md)
+                if prov:
+                    meta_payload["provenance"] = prov
+            except ImportError:
+                pass
+        meta_line = json.dumps(meta_payload, sort_keys=True)
 
         ml_enabled = bool(include_ml and resolved_mode != "none")
         row = spectrum_summary_row(name=ps.name, anchor=anchor, pipeline=pipeline, ml_enabled=ml_enabled)
@@ -1710,7 +1903,7 @@ def run_batch(
                     summary_override=interpretation_override_for_spectrum(
                         interpretation_notes_map, ps.name
                     ),
-                    presentation_figures_html="",
+                    presentation_figures_html=(paper_figures_html or "") + (curation_html or ""),
                 )
                 if deconv_table_html:
                     from reports.front_facing_report import MARKER_FRONT_TECHNICAL
@@ -1741,6 +1934,10 @@ def run_batch(
                         reproducibility_html=reproducibility_html,
                     )
                 )
+                if paper_figures_html:
+                    tables_stack += paper_figures_html
+                if curation_html:
+                    tables_stack += curation_html
         else:
             tables_stack = (
                 title_row_html
@@ -1778,6 +1975,7 @@ def run_batch(
                 "band_shading": show_band_shading,
                 "region_ruler": use_ruler,
                 "peak_labels": bool(fig_meta.get("has_peak_labels")),
+                "paper_manifest": paper_manifest,
             }
         )
 
@@ -1816,6 +2014,10 @@ def run_batch(
             f'  --interpretation-notes "{notes_template_path}"\n',
             encoding="utf-8",
         )
+    if export_paper_figures and paper_manifests:
+        from reports.paper_ftir_figures import write_paper_figures_index
+
+        write_paper_figures_index(paper_out_dir, paper_manifests)
     if export_static_figures or presentation_files:
         write_presentation_figures_index(
             out_path.parent / "presentation",
@@ -1823,6 +2025,59 @@ def run_batch(
             report_html=out_path,
             notes_template=notes_template_path if notes_template_path.is_file() else None,
         )
+
+    region_stacks_html = ""
+    if export_region_stacks and input_paths:
+        from reports.region_stack_export import (
+            build_region_stacks_section_html,
+            export_region_stacks,
+            spectra_from_batch,
+        )
+
+        _smodes = tuple(
+            m for m in stack_modes if m in ("normalized_absorbance", "transmittance")
+        ) or ("normalized_absorbance", "transmittance")
+        stack_specs = spectra_from_batch(
+            [Path(x) for x in input_paths],
+            paper_out_dir=paper_out_dir if export_paper_figures else None,
+        )
+        region_stacks_manifest = export_region_stacks(
+            spectra=stack_specs,
+            out_dir=out_path.parent,
+            regions_file=regions_file,
+            stack_modes=_smodes,  # type: ignore[arg-type]
+            formats=paper_formats if export_paper_figures else ("png", "svg", "pdf"),
+            offset_gap=float(offset_gap),
+            region_labels=str(region_labels),
+            dpi=int(static_dpi or 300),
+            ignore_label_ranges=list(paper_ignore_ranges),
+            show_peak_markers=bool(show_peak_markers),
+            export_chunk_data=bool(export_chunk_data),
+            export_collage=bool(export_chunk_collage),
+            allow_apparent_transmittance=bool(allow_apparent_transmittance),
+            force_intensity_mode=force_intensity_mode,  # type: ignore[arg-type]
+            apparent_transmittance_label=str(apparent_transmittance_label),
+        )
+        region_stacks_html = build_region_stacks_section_html(
+            region_stacks_manifest, out_path.parent
+        )
+        presentation_files.extend(
+            p for paths in region_stacks_manifest.get("outputs", {}).values() for p in paths
+        )
+
+    extra_css = ""
+    extra_script = ""
+    extra_body_html = region_stacks_html
+    if export_region_stacks:
+        from reports.range_editor import range_editor_css, range_editor_js
+
+        extra_css += f"<style>{range_editor_css()}</style>"
+        extra_script += range_editor_js()
+    if export_interactive_curation:
+        from reports.interactive_curation import curation_css, curation_js
+
+        extra_css += f"<style>{curation_css()}</style>"
+        extra_script += curation_js()
 
     html_path = write_interactive_report_html(
         out_path=out_path,
@@ -1840,7 +2095,22 @@ def run_batch(
         visual_theme=theme_key,
         export_static_figures=export_static_figures,
         editable_text=use_editable_text,
+        extra_css=extra_css,
+        extra_body_html=extra_body_html,
+        extra_script=extra_script,
     )
+    manuscript_path: Path | None = None
+    if export_paper_figures and str(paper_report_style).lower() in ("both", "manuscript"):
+        from reports.manuscript_report import write_manuscript_report_html
+
+        manuscript_path = write_manuscript_report_html(
+            out_path=out_path.parent / "MANUSCRIPT_REPORT.html",
+            page_title=page_title,
+            sections=sections,
+            paper_manifests=paper_manifests,
+            report_dir=out_path.parent,
+            region_stacks_html=region_stacks_html,
+        )
     if matlab_stems:
         write_make_figures_m(matlab_dir, matlab_stems)
     if export_csv_dir is not None:
@@ -1884,6 +2154,11 @@ def cmd_batch(args: argparse.Namespace) -> int:
     if ont_arg in ("v3", "v4"):
         rules_config = dict(rules_config or {})
         rules_config["ontology"] = ont_arg
+    if getattr(args, "suppress_nitro_reporting", False):
+        from ml.report_suppression import nitro_suppression_rules_patch
+
+        rules_config = dict(rules_config or {})
+        rules_config = {**rules_config, **nitro_suppression_rules_patch()}
 
     export_csv_dir = None
     if getattr(args, "export_csv", None):
@@ -2007,8 +2282,77 @@ def cmd_batch(args: argparse.Namespace) -> int:
         deconv_regions=str(getattr(args, "deconv_regions", "auto")),
         static_peak_label_policy=str(getattr(args, "static_peak_label_policy", "key")),
         max_static_peak_labels=int(getattr(args, "max_static_peak_labels", 12)),
+        export_paper_figures=bool(getattr(args, "export_paper_figures", False)),
+        paper_figure_modes=tuple(getattr(args, "paper_figure_modes", None) or ("transmittance", "normalized_absorbance")),
+        paper_label_style=str(getattr(args, "paper_label_style", "horizontal-leader")),
+        paper_report_style=str(getattr(args, "paper_report_style", "both")),
+        paper_formats=tuple(getattr(args, "paper_formats", None) or ("png", "svg", "pdf")),
+        max_paper_peak_labels=int(getattr(args, "max_paper_peak_labels", 10)),
+        paper_out=(
+            _resolve_under_chunks(Path(args.paper_out))
+            if getattr(args, "paper_out", "")
+            else None
+        ),
+        min_peak_prominence=float(getattr(args, "min_peak_prominence", 0.04)),
+        min_peak_height=float(getattr(args, "min_peak_height", 0.05)),
+        min_peak_distance_cm1=float(getattr(args, "min_peak_distance_cm1", 20.0)),
+        ignore_label_ranges=tuple(getattr(args, "ignore_label_ranges", None) or ("900:400",)),
+        use_shoulder_detection=bool(getattr(args, "use_shoulder_detection", False)),
+        override_file=(
+            _resolve_under_chunks(Path(args.override_file))
+            if getattr(args, "override_file", "")
+            else None
+        ),
+        export_spectrum_feedback=bool(getattr(args, "export_spectrum_feedback", True)),
+        export_interactive_curation=bool(getattr(args, "export_interactive_curation", False)),
+        export_region_stacks=bool(getattr(args, "export_region_stacks", False)),
+        regions_file=(
+            _resolve_under_chunks(Path(args.regions_file))
+            if getattr(args, "regions_file", "")
+            else None
+        ),
+        export_chunk_data=bool(
+            getattr(args, "export_chunk_data", True)
+            if getattr(args, "export_region_stacks", False)
+            else False
+        ),
+        export_chunk_collage=bool(getattr(args, "chunk_collage", True)),
+        label_overrides_dir=(
+            _resolve_under_chunks(Path(args.label_overrides))
+            if getattr(args, "label_overrides", "")
+            else None
+        ),
+        save_label_overrides=bool(getattr(args, "save_label_overrides", True)),
+        apply_label_overrides=bool(getattr(args, "apply_label_overrides", False)),
+        interactive_png_export=bool(getattr(args, "interactive_png_export", True)),
+        show_peak_markers=bool(getattr(args, "show_peak_markers", False)),
+        allow_apparent_transmittance=bool(getattr(args, "allow_apparent_transmittance", False)),
+        force_intensity_mode=(
+            str(getattr(args, "force_intensity_mode", "") or "") or None
+        ),
+        apparent_transmittance_label=str(
+            getattr(args, "apparent_transmittance_label", "Apparent Transmittance (%)")
+        ),
+        offset_gap=float(getattr(args, "offset_gap", 0.15)),
+        stack_modes=tuple(
+            getattr(args, "chunk_modes", None)
+            or getattr(args, "stack_modes", None)
+            or ("normalized_absorbance", "transmittance")
+        ),
+        region_labels=str(getattr(args, "region_labels", "selected")),
     )
     out_json: dict[str, Any] = {"report": str(rp), "report_audience": audience}
+    if getattr(args, "export_paper_figures", False):
+        paper_dir = (
+            _resolve_under_chunks(Path(args.paper_out))
+            if getattr(args, "paper_out", "")
+            else out.parent / "presentation" / "paper_figures"
+        )
+        out_json["paper_figures_dir"] = str(paper_dir.resolve())
+        out_json["paper_figures_index"] = str((paper_dir / "PAPER_FIGURES_INDEX.md").resolve())
+        ms = out.parent / "MANUSCRIPT_REPORT.html"
+        if ms.is_file():
+            out_json["manuscript_report"] = str(ms.resolve())
     if getattr(args, "export_static_figures", False):
         static_dir = (
             _resolve_under_chunks(Path(args.static_out))
@@ -2377,6 +2721,11 @@ def main() -> int:
         help="Optional text file to seed/replace the spectroscopist summary (## spectrum_stem sections)",
     )
     p_b.add_argument(
+        "--suppress-nitro-reporting",
+        action="store_true",
+        help="Omit nitro / NO₂ labels, band matches, and prose (samples known to lack R–NO₂)",
+    )
+    p_b.add_argument(
         "--export-static-figures",
         action="store_true",
         help="Export per-spectrum static figures (PNG/SVG/PDF) for presentations",
@@ -2397,6 +2746,187 @@ def main() -> int:
         "--static-out",
         default="",
         help="Directory for static figures (default: <report-dir>/figures)",
+    )
+    p_b.add_argument(
+        "--export-paper-figures",
+        action="store_true",
+        help="Export manuscript-ready transmittance + normalized absorbance figures (PNG/SVG/PDF) with horizontal leader-line peak labels",
+    )
+    p_b.add_argument(
+        "--paper-figure-modes",
+        nargs="+",
+        choices=("transmittance", "normalized_absorbance"),
+        default=["transmittance", "normalized_absorbance"],
+        help="Which paper figure modes to export (default: both)",
+    )
+    p_b.add_argument(
+        "--paper-label-style",
+        choices=("horizontal-leader",),
+        default="horizontal-leader",
+        help="Peak label layout for paper figures",
+    )
+    p_b.add_argument(
+        "--paper-report-style",
+        choices=("both", "product", "full", "manuscript"),
+        default="both",
+        help="Which HTML reports include paper figures: product/full REPORT.html, MANUSCRIPT_REPORT.html, or both",
+    )
+    p_b.add_argument(
+        "--paper-formats",
+        nargs="+",
+        choices=("png", "svg", "pdf"),
+        default=["png", "svg", "pdf"],
+        help="Vector/raster formats for paper figure export",
+    )
+    p_b.add_argument(
+        "--max-paper-peak-labels",
+        type=int,
+        default=10,
+        help="Max horizontal peak labels per paper figure (8–12 recommended)",
+    )
+    p_b.add_argument(
+        "--paper-out",
+        default="",
+        help="Directory for paper figures (default: <report-dir>/presentation/paper_figures)",
+    )
+    p_b.add_argument(
+        "--min-peak-prominence",
+        type=float,
+        default=0.04,
+        help="Minimum prominence for paper figure candidate peaks (normalized absorbance)",
+    )
+    p_b.add_argument(
+        "--min-peak-height",
+        type=float,
+        default=0.05,
+        help="Minimum height for paper figure candidate peaks (normalized absorbance)",
+    )
+    p_b.add_argument(
+        "--min-peak-distance-cm1",
+        type=float,
+        default=20.0,
+        help="Minimum peak spacing in cm⁻¹ for candidate detection",
+    )
+    p_b.add_argument(
+        "--ignore-label-ranges",
+        nargs="+",
+        default=["900:400"],
+        help="Wavenumber ranges excluded from automatic labeling (default: 900:400)",
+    )
+    p_b.add_argument(
+        "--use-shoulder-detection",
+        action="store_true",
+        help="Flag broad shoulder-like peaks during candidate detection",
+    )
+    p_b.add_argument(
+        "--override-file",
+        default="",
+        help="Optional YAML/CSV peak override file (required_peaks, suppress_ranges, etc.)",
+    )
+    p_b.add_argument(
+        "--export-spectrum-feedback",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Export per-spectrum feedback TXT/MD and embed in HTML reports",
+    )
+    p_b.add_argument(
+        "--export-interactive-curation",
+        action="store_true",
+        help="Embed interactive Plotly curation figures with label adjustment UI in REPORT.html",
+    )
+    p_b.add_argument(
+        "--export-region-stacks",
+        action="store_true",
+        help="Export spectral chunks: singles, offset stacks, collages, and chunk data under stacks/",
+    )
+    p_b.add_argument(
+        "--export-chunk-data",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Export per-range chunk_data JSON/CSV when --export-region-stacks is used (default: on)",
+    )
+    p_b.add_argument(
+        "--chunk-collage",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Export multi-range collage figures when --export-region-stacks is used",
+    )
+    p_b.add_argument(
+        "--chunk-modes",
+        nargs="+",
+        choices=("normalized_absorbance", "transmittance"),
+        default=None,
+        help="Chunk figure intensity modes (defaults to --stack-modes)",
+    )
+    p_b.add_argument(
+        "--regions-file",
+        "--ranges-file",
+        dest="regions_file",
+        default="",
+        help="JSON/YAML ranges_config.json defining custom wavenumber chunks",
+    )
+    p_b.add_argument(
+        "--label-overrides",
+        default="",
+        help="Directory for per-spectrum {stem}_label_overrides.json files",
+    )
+    p_b.add_argument(
+        "--save-label-overrides",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Write auto label override JSON templates when missing",
+    )
+    p_b.add_argument(
+        "--apply-label-overrides",
+        action="store_true",
+        help="Apply saved label overrides when exporting paper/manuscript figures",
+    )
+    p_b.add_argument(
+        "--allow-apparent-transmittance",
+        action="store_true",
+        help="Allow T_app = 100·10^(−A) figures from absorbance-like data (clearly labeled, not native %T)",
+    )
+    p_b.add_argument(
+        "--force-intensity-mode",
+        choices=("transmittance_percent", "absorbance", "absorbance_difference"),
+        default=None,
+        help="Override automatic intensity classification for paper/curation/chunk export",
+    )
+    p_b.add_argument(
+        "--apparent-transmittance-label",
+        default="Apparent Transmittance (%)",
+        help="Y-axis label when exporting apparent transmittance from absorbance",
+    )
+    p_b.add_argument(
+        "--show-peak-markers",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Draw orange peak-tip markers on static manuscript/chunk figures (default: off; interactive curation uses optional checkbox)",
+    )
+    p_b.add_argument(
+        "--interactive-png-export",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable Plotly modebar PNG export on interactive curation figures",
+    )
+    p_b.add_argument(
+        "--offset-gap",
+        type=float,
+        default=0.15,
+        help="Fractional gap between traces in region offset stacks (default 0.15)",
+    )
+    p_b.add_argument(
+        "--stack-modes",
+        nargs="+",
+        choices=("normalized_absorbance", "transmittance"),
+        default=["normalized_absorbance", "transmittance"],
+        help="Stack figure intensity modes per discussion region",
+    )
+    p_b.add_argument(
+        "--region-labels",
+        choices=("selected", "none"),
+        default="selected",
+        help="Peak label policy on region offset stacks",
     )
     p_b.set_defaults(func=cmd_batch)
     args = ap.parse_args()

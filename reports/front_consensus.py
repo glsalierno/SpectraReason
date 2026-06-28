@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from ml.report_suppression import nitro_reporting_suppressed
 from reports.kronecker_pi_layout import _esc, _truncate
 from reports.product_v1_report import chemistry_label
 
@@ -251,7 +252,7 @@ def build_consensus_interpretation_text(pipeline: dict[str, Any], *, ml_enabled:
     if phenol >= 0.3 or alcohol >= 0.3:
         parts.append("Phenol/alcohol subclassing remains tentative without stronger paired diagnostic bands.")
 
-    if not nitro_is_supported(pipeline):
+    if not nitro_reporting_suppressed(pipeline) and not nitro_is_supported(pipeline):
         asym = float((assigns.get("NO2_asym_region") or {}).get("score", 0) or 0)
         sym = float((assigns.get("NO2_sym_region") or {}).get("score", 0) or 0)
         if asym >= 0.12 or sym >= 0.1:
@@ -293,9 +294,15 @@ def build_front_consensus_table_html(*, rows: list[dict[str, Any]], ml_enabled: 
         "<section id='summary-table' class='summary-table-section product-summary card front-summary consensus-section'>",
         "<h2 class='summary-table-heading'>Consensus interpretation</h2>",
         "<p class='muted small'>Evidence-first consensus; ML is advisory when enabled.</p>",
-        "<p class='muted small'>",
-        "Local overlap motifs (NO₂ regions, fingerprint windows) appear under ambiguities or technical details, not as standalone supported chemistry.",
-        "</p>",
+    ]
+    if not any(nitro_reporting_suppressed(r.get("_pipeline") or {}) for r in rows):
+        parts.append(
+            "<p class='muted small'>"
+            "Local overlap motifs (NO₂ regions, fingerprint windows) appear under ambiguities or technical details, "
+            "not as standalone supported chemistry."
+            "</p>"
+        )
+    parts.extend([
         "<div class='table-scroll summary-table-wrap'>"
         "<table class='tbl tbl-zebra tbl-sticky tbl-summary tbl-front-consensus'><thead><tr>"
         "<th>Spectrum</th>",
@@ -305,7 +312,7 @@ def build_front_consensus_table_html(*, rows: list[dict[str, Any]], ml_enabled: 
         "<th>Confidence</th>",
         "<th></th>",
         "</tr></thead><tbody>",
-    ]
+    ])
     for r in rows:
         pipeline = r.get("_pipeline") or {}
         consensus = build_consensus_interpretation_text(pipeline, ml_enabled=ml_enabled)

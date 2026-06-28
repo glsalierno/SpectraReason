@@ -267,38 +267,25 @@ def export_plotly_image(
         return False
 
 
-def _display_path(path: Path, *, base: Path | None = None) -> str:
-    """Prefer repo-relative POSIX paths for shareable documentation."""
-    path = path.resolve()
-    if base is not None:
-        try:
-            return path.relative_to(base.resolve()).as_posix()
-        except ValueError:
-            pass
-    return path.as_posix()
-
-
 def write_presentation_figures_index(
     presentation_dir: Path,
     *,
     figure_files: list[str],
     report_html: Path,
     notes_template: Path | None = None,
-    path_base: Path | None = None,
 ) -> Path:
-    """Write FIGURES_INDEX.md with portable relative paths when possible."""
+    """Write FIGURES_INDEX.md with absolute paths for slides/manuscripts."""
     presentation_dir = presentation_dir.resolve()
     presentation_dir.mkdir(parents=True, exist_ok=True)
     index_path = presentation_dir / "FIGURES_INDEX.md"
-    base = path_base or presentation_dir.parent.parent
     lines = [
         "# Presentation figures\n",
-        f"Interactive report: `{_display_path(report_html, base=base)}`\n",
+        f"Interactive report: `{report_html.resolve()}`\n",
         "\n## Exported files\n",
     ]
     if figure_files:
         for f in sorted(figure_files):
-            lines.append(f"- `{_display_path(Path(f), base=base)}`\n")
+            lines.append(f"- `{Path(f).resolve()}`\n")
     else:
         lines.append(
             "- _(No raster/vector files — install Kaleido: `pip install kaleido`, "
@@ -310,7 +297,7 @@ def write_presentation_figures_index(
     )
     if notes_template and notes_template.is_file():
         lines.append(
-            f"- Or edit `{_display_path(notes_template, base=base)}` and re-run with `--interpretation-notes`.\n"
+            f"- Or edit `{notes_template.resolve()}` and re-run with `--interpretation-notes`.\n"
         )
     index_path.write_text("".join(lines), encoding="utf-8")
     return index_path
@@ -450,7 +437,9 @@ def export_matlab_spectrum_csvs(
     written.append(peaks_path)
 
     from ml.ftir_region_ruler import FTIR_RULER_REGIONS
+    from ml.report_suppression import nitro_reporting_suppressed, ruler_hover_note
 
+    suppress_nitro = nitro_reporting_suppressed(pipeline)
     ruler_rows: list[dict[str, Any]] = []
     act_map = {a["id"]: a for a in (fig_meta.get("ruler_activities") or [])}
     for spec in FTIR_RULER_REGIONS:
@@ -463,7 +452,7 @@ def export_matlab_spectrum_csvs(
                 "hi_cm1": spec.hi,
                 "rel_activity": act.get("rel_activity", ""),
                 "tier": act.get("tier", ""),
-                "hover_note": spec.hover_note or spec.short_label,
+                "hover_note": ruler_hover_note(spec, suppress_nitro=suppress_nitro),
             }
         )
     ruler_path = matlab_dir / f"{stem}_ruler_regions.csv"

@@ -58,6 +58,10 @@ def run_evidence_first_pipeline(
         }
     if rules_config and rules_config.get("post_rules"):
         ru_cfg["post_rules"] = rules_config["post_rules"]
+    if rules_config and rules_config.get("disabled_labels"):
+        ru_cfg["disabled_labels"] = list(rules_config.get("disabled_labels") or [])
+    if rules_config and rules_config.get("suppress_nitro_reporting"):
+        ru_cfg["suppress_nitro_reporting"] = True
 
     from ml.ftir_atr import merge_measurement_into_metadata, resolve_atr_context
 
@@ -70,6 +74,10 @@ def run_evidence_first_pipeline(
     )
     md = merge_measurement_into_metadata(md, measurement)
     evidence = extract_spectral_evidence(wn, y, peaks=peaks, config=ev_cfg)
+    if rules_config and rules_config.get("suppress_nitro_reporting"):
+        from ml.report_suppression import filter_nitro_band_matches
+
+        evidence["band_matches"] = filter_nitro_band_matches(list(evidence.get("band_matches") or []))
     evidence["measurement"] = measurement
     try:
         from ml.ftir_artifacts import detect_spectral_artifacts
@@ -153,7 +161,7 @@ def run_evidence_first_pipeline(
 
     consensus = _build_consensus(rule_result, ml_basic, ml_subtle, ml_legacy, fusion_mode=fusion_mode)
 
-    return {
+    out = {
         "evidence": evidence,
         "rule_assignments": rule_result,
         "ml_refinement": {
@@ -171,6 +179,11 @@ def run_evidence_first_pipeline(
         "ontology": str((rule_result or {}).get("ontology") or ru_cfg.get("ontology") or "v3").lower(),
         "measurement": measurement,
     }
+    if rules_config and rules_config.get("suppress_nitro_reporting"):
+        from ml.report_suppression import apply_nitro_suppression
+
+        apply_nitro_suppression(out)
+    return out
 
 
 def _build_consensus(

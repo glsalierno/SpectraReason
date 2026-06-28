@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT))
 from lib.spectrum import load_processed_spectrum
 from ml.ftir_pipeline import run_evidence_first_pipeline, load_model_bundle
 
-ps = load_processed_spectrum(ROOT / "examples/spectra/Catechol-120-80-9-IR.jdx")
+ps = load_processed_spectrum(ROOT / "examples/spectra/Dopamine_Powder.CSV")
 md = {"title": "Dopamine", "cas": "51-61-6", "formula": "C8H11NO2"}
 pipe_e = run_evidence_first_pipeline(ps.wn, ps.y, md=md, ml_mode="none")
 import joblib

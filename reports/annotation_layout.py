@@ -212,8 +212,14 @@ def wrap_ruler_label(
     *,
     wn_lo: float,
     wn_hi: float,
+    suppress_nitro_reporting: bool = False,
 ) -> str:
     """Multi-line ruler label using <br> for Plotly annotations."""
+    from ml.report_suppression import ruler_label_lines
+
+    custom = ruler_label_lines(region_id, short_label, suppress_nitro=suppress_nitro_reporting)
+    if custom:
+        return "<br>".join(custom)
     if region_id in RULER_LABEL_LINES:
         return "<br>".join(RULER_LABEL_LINES[region_id])
     span = max(float(wn_hi) - float(wn_lo), 1.0)
@@ -338,6 +344,7 @@ def plan_ruler_row_layouts(
     regions: tuple[Any, ...],
     *,
     front: bool = False,
+    suppress_nitro_reporting: bool = False,
 ) -> tuple[list[dict[str, Any]], float]:
     """
     Per-region y band, wrapped label, and font size for ruler panels.
@@ -352,6 +359,7 @@ def plan_ruler_row_layouts(
             spec.short_label,
             wn_lo=float(spec.lo),
             wn_hi=float(spec.hi),
+            suppress_nitro_reporting=suppress_nitro_reporting,
         )
         w = ruler_row_line_weight(label_text)
         weights.append(w)
@@ -547,3 +555,79 @@ def write_layout_validation(
         ]
         md.write_text("".join(lines), encoding="utf-8")
     return json_path
+
+
+def apply_horizontal_leader_label_layout(
+    peaks: list[dict[str, Any]],
+    *,
+    y_min: float,
+    y_max: float,
+    wn_min: float | None = None,
+    wn_max: float | None = None,
+    label_side: str = "above",
+    max_labels: int = 10,
+    base_offset_frac: float = 0.08,
+    step_offset_frac: float = 0.05,
+) -> tuple[list[dict[str, Any]], dict[str, int]]:
+    """
+    Horizontal paper-style peak labels with short leader lines.
+
+    ``label_side`` is ``above`` (normalized absorbance maxima) or ``below`` (transmittance dips).
+    Lower-prominence labels are suppressed when boxes still overlap after vertical offsets.
+    """
+    if not peaks:
+        return [], {"n_labels": 0, "labels_placed": 0, "collision_suppressed": 0}
+
+    y_span = max(float(y_max) - float(y_min), 1e-9)
+    wn_lo = float(wn_min) if wn_min is not None else -1e9
+    wn_hi = float(wn_max) if wn_max is not None else 1e9
+    wn_data_span = max(wn_hi - wn_lo, 400.0)
+    above = str(label_side or "above").lower() != "below"
+    direction = 1.0 if above else -1.0
+
+    ranked = sorted(
+        peaks,
+        key=lambda p: -float(p.get("prominence", p.get("local_prominence", p.get("height", 0))) or 0),
+    )[: max(int(max_labels) * 3, int(max_labels))]
+    placed_boxes: list[tuple[float, float, float, float]] = []
+    out: list[dict[str, Any]] = []
+    stats = {"n_labels": len(ranked), "labels_placed": 0, "collision_suppressed": 0}
+
+    for peak in ranked:
+        if stats["labels_placed"] >= int(max_labels):
+            stats["collision_suppressed"] += 1
+            continue
+        wn = float(peak.get("wn", peak.get("wn_cm1", 0)))
+        y = float(peak.get("y", peak.get("height", 0)))
+        if not (math.isfinite(wn) and math.isfinite(y)):
+            stats["collision_suppressed"] += 1
+            continue
+        if wn < wn_lo - 5 or wn > wn_hi + 5:
+            stats["collision_suppressed"] += 1
+            continue
+        text = str(peak.get("text") or f"{wn:.0f}")
+        placed = False
+        for step in range(12):
+            offset = (base_offset_frac + step * step_offset_frac) * y_span * direction
+            label_y = y + offset
+            ann = {"wn": wn, "y": y, "text": text, "label_y": label_y, "textangle": 0}
+            box = _estimate_label_box(
+                wn,
+                label_y,
+                y_span=y_span,
+                text=text,
+                textangle=0.0,
+                yshift_px=0.0,
+                wn_span_data=wn_data_span,
+            )
+            if any(_box_overlaps(box, b) for b in placed_boxes):
+                continue
+            placed_boxes.append(box)
+            out.append({**peak, **ann, "show_label": True})
+            stats["labels_placed"] += 1
+            placed = True
+            break
+        if not placed:
+            stats["collision_suppressed"] += 1
+
+    return out, stats

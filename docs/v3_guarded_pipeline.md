@@ -77,7 +77,7 @@ python reports/structural_fg_svm_kronecker_report.py batch ^
 ## Train with v3 artifact tag
 
 ```text
-cd SpectraReason   # repository root; export PYTHONPATH=.
+cd "c:\Users\glsal\OneDrive - UMass Lowell\TURI\Research\AI\AT-10\PDA\chunks\FTIR_SVM_v2"
 set PYTHONPATH=%CD%
 python -m ml.structural_fg_svm train --dataset-prefix data\training\struct_fg_v7_pubchem_mordred ^
   --model-kind basic --remap-legacy-labels --min-label-positives 20 ^

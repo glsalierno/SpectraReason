@@ -1,4 +1,4 @@
-# Reproducibility (SpectraReason v5)
+# Reproducibility (FTIR_SVM_v5 production release)
 
 ## Environment
 
@@ -6,71 +6,36 @@
 |------|-------------|
 | **Python** | 3.10+ (3.11 recommended on Windows) |
 | **Core packages** | `requirements.txt` at repo root |
-| **PYTHONPATH** | Repository root |
-| **RDKit** | Required for SMARTS weak-label training |
-| **Kaleido** | Optional (`pip install kaleido`) for Plotly static PNG |
+| **PYTHONPATH** | Repository root (see below) |
 
-```bash
-cd SpectraReason
-export PYTHONPATH="$(pwd)"
+```powershell
+Set-Location "c:\Users\glsal\OneDrive - UMass Lowell\TURI\Research\AI\AT-10\PDA\chunks\FTIR_SVM_v5"
+$env:PYTHONPATH = (Get-Location).Path
 python -m pip install -r requirements.txt
 ```
 
-Optional dev: `pip install -r requirements-dev.txt`.
-
-## Frozen production defaults
-
-| Component | Version / path |
-|-----------|----------------|
-| Ontology | **v4** (`ml/ftir_ontology.py`) |
-| Band library | **v4** (`ml/ftir_band_library.yaml` + Python module) |
-| Guardrails | **v3** (`ml/ftir_guardrails.py`) |
-| Rules preset | **conservative** (`configs/rule_presets/conservative.json`) |
-| Report contract | **product_v1** |
-| Feature set (ML) | `spectral+evidence_v2` (434-D) |
-
-See [`PRODUCTION_DEFAULTS.md`](PRODUCTION_DEFAULTS.md).
-
-## Production models (bundled in git)
-
-Canonical copies live under `data/training/bundled/v4_production/`. After clone, install
-into `ml/runs/` (expected by reports):
-
-```bash
-./scripts/setup_bundled_artifacts.sh   # Windows: .\scripts\setup_bundled_artifacts.ps1
-```
-
-Installed paths:
-
-- `ml/runs/struct_fg_family_v4_ontology_latest.joblib`
-- `ml/runs/struct_fg_specific_v4_ontology_latest.joblib`
-
-Training matrices (same feature space): `ds_v4_*_spectral_evidence_v2_nist.npz` in bundled folder.
-See [`ML_ARTIFACTS.md`](ML_ARTIFACTS.md).
-
-Verify hashes:
-
-```bash
-python -c "from reports.reproducibility_meta import _sha256_file; from pathlib import Path; p=Path('ml/runs/struct_fg_family_v4_ontology_latest.joblib'); print(p, _sha256_file(p))"
-```
+Optional dev tools: `pip install -r requirements-dev.txt` (includes `vulture`).
 
 ## Regenerate a production report
 
-```bash
-python reports/structural_fg_svm_kronecker_report.py batch \
-  --inputs examples/spectra/Catechol-120-80-9-IR.jdx \
-  --ontology v4 --guardrails v3 --ml-mode both \
-  --family-model ml/runs/struct_fg_family_v4_ontology_latest.joblib \
-  --specific-model ml/runs/struct_fg_specific_v4_ontology_latest.joblib \
-  --fusion-mode annotate --ml-guardrails strict \
-  --report-style product_v1 --report-audience front \
-  --visual-theme matlab --show-region-ruler \
+See `docs\COMMANDS.md` for the full front-facing command. Minimal smoke:
+
+```powershell
+python reports/structural_fg_svm_kronecker_report.py batch `
+  --inputs "examples\spectra\Catechol-120-80-9-IR.jdx" `
+  --ontology v4 --guardrails v3 --ml-mode both `
+  --family-model ml/runs/struct_fg_family_v4_ontology_latest.joblib `
+  --specific-model ml/runs/struct_fg_specific_v4_ontology_latest.joblib `
+  --fusion-mode annotate --ml-guardrails strict `
+  --report-style product_v1 --report-audience front `
+  --visual-theme matlab --show-region-ruler `
+  --peak-sensitivity sensitive --show-weak-peaks `
   --out reports/reference_snapshots/front/REPORT.html
 ```
 
 ## Embedded report metadata
 
-Each `product_v1` HTML report includes a collapsed **Reproducibility metadata** JSON block with:
+Each `product_v1` HTML report includes a collapsed **Reproducibility metadata** JSON block (Technical details) with:
 
 - UTC generation timestamp
 - Git commit (12-char) when `.git` is available
@@ -81,36 +46,39 @@ Each `product_v1` HTML report includes a collapsed **Reproducibility metadata** 
 
 Implementation: `reports/reproducibility_meta.py`.
 
-## Model / retraining philosophy
+## Verify model hashes
 
-- **Rules are primary** for supported vs tentative calls in production (`fusion-mode annotate`).
-- **ML retrains** can use bundled NPZ + PubChem JSON without NIST; full rebuilds need local NIST SQLite.
-- **Retrain outputs** go to `ml/runs/` (gitignored scratch); bundled `*_latest.joblib` is the frozen release.
-- **Experiments** never overwrite `*_latest.joblib` without maintainer review (`--no-update-latest`).
-- **Deconv models** under `ml/runs/experiments/` are not production-frozen.
+```powershell
+python -c "from reports.reproducibility_meta import _sha256_file; from pathlib import Path; p=Path('ml/runs/struct_fg_family_v4_ontology_latest.joblib'); print(p, _sha256_file(p))"
+```
 
-## Benchmark strategy
+Compare to values in `reports/release_stabilization_audit.md` or the report JSON block.
 
-Confounder-aware SMARTS labels, hard negatives, and explainability-first evaluation.
-See [`BENCHMARK_PHILOSOPHY.md`](BENCHMARK_PHILOSOPHY.md).
+## Cite / document a run
 
-## External dataset policy
+Record in publications or lab notebooks:
 
-No proprietary redistribution through git. See [`EXTERNAL_DATASETS.md`](EXTERNAL_DATASETS.md).
+1. Repository path and git commit from the report metadata block
+2. `--report-audience`, `--visual-theme`, `--peak-sensitivity`, label thresholds
+3. Family + specific joblib SHA-256 prefixes
+4. NIST index path if ML training is referenced (`docs\COMMANDS.md`)
+
+## Frozen in this release
+
+- Ontology v4 + band library (Python module)
+- v3 guardrails + conservative rules preset
+- Production family/specific joblibs (paths above; files not moved)
+- `product_v1` front/debug presentation contract
+- Reference snapshots under `reports/reference_snapshots/`
+
+Not frozen: experimental deconv model under `ml/runs/experiments/`.
 
 ## Reference snapshots
 
-```bash
+Regenerate all reference bundles:
+
+```powershell
 python scripts/release_stabilize.py --snapshots-only
 ```
 
-Catalog: `reports/reference_snapshots/README.md`.
-
-## Cite a run
-
-Record from the report metadata block:
-
-1. Git commit hash
-2. `--report-audience`, `--visual-theme`, `--peak-sensitivity`
-3. Family + specific joblib SHA-256 prefixes
-4. NIST index build ID if ML training is referenced
+See `reports/reference_snapshots/README.md` for spectra list and expected qualitative behavior.

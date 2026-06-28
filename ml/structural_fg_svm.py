@@ -96,7 +96,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 import numpy as np
 
@@ -2241,6 +2241,7 @@ def predict_proba_row(
     use_mordred = fs == "legacy" or "mordred" in fs
     calc: Any = None
     mordred_dim = 0
+    mordred_names: list[str] = []
     if use_mordred:
         calc, mordred_names = make_mordred_calculator(max_descriptors=mrq)
         mordred_dim = len(mordred_names)
@@ -2290,6 +2291,19 @@ def predict_proba_row(
             evidence=ev_extra,
             deconv_mode=str(meta.get("deconv_mode") or "fast"),
         )
+
+    model_fnames = list(artifact.get("feature_names") or meta.get("feature_names") or [])
+    if model_fnames:
+        mordred_name_list = mordred_names if use_mordred else []
+        built_names, _ = _build_feature_names_for_layout(
+            feature_set=fs,
+            mordred_names=mordred_name_list,
+            smarts_labels=smarts_labels,
+        )
+        x_vec = np.asarray(x_row, dtype=float).ravel()
+        if len(model_fnames) != len(x_vec) or built_names != model_fnames:
+            name_map = {n: float(v) for n, v in zip(built_names, x_vec)}
+            x_row = np.asarray([name_map.get(n, 0.0) for n in model_fnames], dtype=float)
 
     scaler = artifact["scaler"]
     clf = artifact["model"]

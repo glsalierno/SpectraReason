@@ -1,0 +1,18 @@
+{
+  "description": "Suppress nitro / NO₂ reporting for samples known to lack R–NO₂ (e.g. dopamine, polydopamine).",
+  "ontology": "v4",
+  "suppress_nitro_reporting": true,
+  "disabled_labels": [
+    "NO2_asym_region",
+    "NO2_sym_region",
+    "N_O_NO2_overlap",
+    "heterocyclic_N_O_region",
+    "heterocyclic_N_oxide",
+    "n_oxide_confounded_region",
+    "nitro",
+    "nitro_family",
+    "pyrrole_N_oxide_like"
+  ],
+  "disabled_band_ids": ["nitro_asym", "nitro_sym"],
+  "report_suppression": {"nitro": true}
+}

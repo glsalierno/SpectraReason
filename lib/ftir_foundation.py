@@ -107,7 +107,15 @@ def read_csv_spectrum(path: Path) -> tuple[np.ndarray, np.ndarray]:
         while wn.size > 0 and (not np.isfinite(wn[0]) or not np.isfinite(y[0])):
             wn, y = wn[1:], y[1:]
         m = np.isfinite(wn) & np.isfinite(y)
-        return wn[m], y[m]
+        wn, y = wn[m], y[m]
+        # Drop zero/near-zero %T padding rows (common in instrument exports; breaks -log10(T)).
+        if wn.size >= min_points:
+            mx = float(np.nanmax(y))
+            mn = float(np.nanmin(y))
+            if mx <= 120.0 and mn >= 0.0:
+                keep = y > 1e-3
+                wn, y = wn[keep], y[keep]
+        return wn, y
 
     candidates: list[tuple[np.ndarray, np.ndarray]] = []
     raw = pd.read_csv(path, header=None)
@@ -176,11 +184,15 @@ def infer_intensity_mode(y: np.ndarray) -> IntensityMode:
     return "absorbance"
 
 
-def transmittance_to_absorbance(t: np.ndarray) -> np.ndarray:
-    t = np.clip(np.asarray(t, dtype=float), 1e-12, None)
-    if np.nanmax(t) > 50 or (np.nanmax(t) > 1.2 and np.nanmax(t) <= 105):
-        return -np.log10(t / 100.0)
-    return -np.log10(t)
+def transmittance_to_absorbance(t: np.ndarray, *, eps: float = 1e-9) -> np.ndarray:
+    """Convert transmittance to absorbance: A = -log10(clip(T, eps) / 100) for percent input."""
+    t_arr = np.asarray(t, dtype=float)
+    mx = float(np.nanmax(t_arr)) if t_arr.size else 0.0
+    if mx <= 1.05:
+        t_clip = np.clip(t_arr, eps, None)
+        return -np.log10(t_clip)
+    t_clip = np.clip(t_arr, eps, None)
+    return -np.log10(t_clip / 100.0)
 
 
 def to_absorbance(y: np.ndarray, mode: IntensityMode = "auto") -> tuple[np.ndarray, IntensityMode]:

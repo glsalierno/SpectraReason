@@ -1,72 +1,81 @@
-# External datasets
+# External FTIR datasets
 
-SpectraReason ingests **public or lab-licensed** reference data through a
-plugin-style library architecture. **This repository does not redistribute**
-NIST indexes, vendor libraries, or proprietary experimental archives.
+Expand training/reference diversity using **legally accessible** sources only. Production v4 NIST models remain frozen until external data passes QA and benchmark review.
 
-## Design principles
+## Allowed
 
-1. **Provenance first** — every ingested spectrum records source, license, and
-   retrieval date in dataset metadata JSON.
-2. **Local indexing** — large SQLite/JCAMP archives stay on disk outside git.
-3. **Structure enrichment** — PubChem PUG REST with on-disk cache (gitignored).
-4. **No surprise commits** — `data/external_sources/raw/` and `*.sqlite` are
-   gitignored; only manifests and ingestion code ship in git.
+| Source | License (summary) | Ingestion |
+|--------|-------------------|-----------|
+| SDBS (AIST Japan) | Research use, cite AIST; no bulk redistribution | User-downloaded JCAMP → `ingest-sdbs` |
+| Zenodo / university open FTIR | Per-record (often CC BY) | Local download → `ingest-open-polymer` |
+| Raman Open Database | Open terms on site | JCAMP adapter when FTIR available |
+| User JCAMP / CSV | User license | `--library-path` plugin |
+| NIST NistChemData | Public domain (US Gov) | Existing production indexer (frozen) |
 
-## Supported workflows
+## Not allowed
 
-### NIST Chemistry WebBook (via NistChemData mirror)
+- Scraping or redistributing **Wiley KnowItAll**, **Sadtler**, or other proprietary commercial libraries
+- Committing proprietary spectral files to git
+- Automated bulk download of SDBS against their terms
 
-1. Download the community mirror archive to `data/external_sources/raw/` (local).
-2. Build or symlink a SQLite index (see `METHODS.md`, `data/README_DATA.md`).
-3. Point `build-dataset` at the index path:
+## Provenance philosophy
 
-```bash
-python -m ml.structural_fg_svm build-dataset \
-  --nist-index data/external/nist_index.sqlite \
-  --out-prefix ml/runs/ds_v4_family_spectral_evidence_v2_nist \
-  --model-kind family --label-source smarts \
-  --feature-set spectral+evidence_v2 --ontology v4 \
-  --require-structure --enrich-pubchem
+Every ingested spectrum stores in `metadata_json`:
+
+- `source_id`, `source_name`, `source_license`
+- `original_identifier`, `ingestion_date`
+- `preprocessing_version` (matches `lib.ftir_foundation.preprocess_spectrum`)
+- `dataset_tier` = `experimental` until promotion
+- `dataset_tags` for confounder coverage
+
+Reports in **debug** audience can surface provenance when metadata is present.
+
+## Directory layout
+
+```
+data/external_sources/     # registry, README, raw downloads
+data/experimental/         # SQLite indexes (not production)
+data/benchmark_sets/       # confounder JSON subsets
+ml/external/               # ingestion adapters
+ml/dataset_quality.py      # QA audits
+ml/runs/experimental/      # NPZ + models (never *_latest)
 ```
 
-**Legal:** NIST data are public domain; respect NIST/NistChemData terms and do not
-commit the SQLite file.
+## Add a new source
 
-### SDBS (AIST Japan)
+1. Verify license and redistribution terms.
+2. Add an entry to `data/external_sources/source_registry.json`.
+3. Implement or reuse an importer in `ml/external/` (prefer `import_jcamp_folder` / `import_csv_bundle`).
+4. Place raw files under `data/external_sources/raw/<source_id>/`.
+5. Run ingestion → `dataset-qa` → `build-confounder-benchmarks`.
+6. Document commands in `docs/COMMANDS.md`.
+7. Update `reports/external_dataset_expansion_audit.md` after first ingest.
 
-Use for spot-checking aromatic/heteroaromatic benchmarks. Ingest JCAMP into the
-same preprocessing pipeline; store raw files under `data/external_sources/raw/sdbs/`
-(gitignored). Document CAS/name in manifest CSV under `data/benchmark_sets/`.
+## Plugin architecture
 
-### Zenodo / open polymer corpora
+```powershell
+python -m ml.external ingest-jcamp-folder `
+  --out-db data/experimental/my_lib.sqlite `
+  --library-path "D:\MyLicensedLibrary\jcamp" `
+  --library-source jcamp `
+  --source-id user_licensed_local
+```
 
-1. Record DOI, version, and license in `data/benchmark_sets/<name>_manifest.json`.
-2. Convert to internal NPZ only on developer machines (`ml/runs/`, gitignored).
-3. Ship **manifest + evaluation scripts**, not the corpus itself.
+`library_source` values: `jcamp`, `csv`, `sqlite` (passthrough copy).
 
-## Plugin library architecture
+## Promotion to production
 
-| Component | Role |
-|-----------|------|
-| `ml/ftir_band_library.yaml` | Wavenumber windows and band semantics (versioned) |
-| `ml/ftir_ontology.py` | Label taxonomy (family / specific / motif / artifact) |
-| `ml/fg_smarts_library.py` | SMARTS weak labels when structure resolves |
-| `ml/structural_fg_svm.py` | Dataset build + train CLI |
-| `configs/rule_presets/` | Conservative vs sensitive evidence thresholds |
+1. Merge indexes → `merge-indexes`
+2. `dataset-qa` — resolve blocking flags
+3. Review `data/benchmark_sets/*.json`
+4. `build-external-dataset` → train under `ml/runs/experimental/` with `--no-update-latest`
+5. Regression reports on `examples/spectra` + powder CSVs
+6. Manual sign-off before copying artifacts to `ml/runs/*_latest.joblib`
 
-Adding a new external source means: indexer → metadata schema → optional SMARTS
-enrichment → benchmark manifest — **not** copying spectra into git.
+## Preprocessing
 
-## What collaborators must not commit
+All importers call the same pipeline as NIST indexing:
 
-- NIST `*.sqlite` indexes
-- Vendor ATR libraries
-- Customer polymer powder CSVs
-- PubChem caches > few MB (use local `ml/runs/pubchem_train_writable.json`)
+`read_spectrum` / JCAMP parse → `preprocess_spectrum` → `prepare_nist_ftir_cm1` → SQLite `wn_json` / `y_json`.
 
-## Redistribution policy
-
-Publications may **cite** NIST/WebBook and Zenodo DOIs. HTML reports generated
-from lab spectra are **not** redistributable unless the underlying data license
-allows it. When in doubt, export band tables and figures without embedded arrays.
+Do not fork preprocessing for external data.

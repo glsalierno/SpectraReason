@@ -1,0 +1,26 @@
+{
+  "benchmarks": {
+    "nitro_vs_n_oxide": {
+      "count": 0
+    },
+    "phenol_vs_alcohol": {
+      "count": 2
+    },
+    "siloxane_vs_C_O": {
+      "count": 0
+    },
+    "amide_vs_enamine": {
+      "count": 0
+    },
+    "pyrrole_vs_secondary_amine": {
+      "count": 5
+    },
+    "ATR_artifacts": {
+      "count": 0
+    },
+    "crowded_fingerprint": {
+      "count": 5
+    }
+  },
+  "sqlite": "C:\\Users\\glsal\\OneDrive - UMass Lowell\\TURI\\Research\\AI\\AT-10\\PDA\\chunks\\FTIR_SVM_v5\\data\\experimental\\examples_index.sqlite"
+}

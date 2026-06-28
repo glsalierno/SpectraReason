@@ -112,6 +112,7 @@ def add_ftir_region_ruler(
     active_min: float = 0.05,
     strong_min: float = 0.10,
     front_mode: bool = False,
+    suppress_nitro_reporting: bool = False,
 ) -> list[dict[str, Any]]:
     """Add stacked horizontal ruler bars to an existing Plotly subplot row."""
     import plotly.graph_objects as go
@@ -119,9 +120,14 @@ def add_ftir_region_ruler(
     if not FTIR_RULER_REGIONS:
         return []
 
+    from ml.report_suppression import ruler_hover_note
     from reports.annotation_layout import plan_ruler_row_layouts, ruler_font_size_for_band
 
-    row_layouts, _total_weight = plan_ruler_row_layouts(FTIR_RULER_REGIONS, front=front_mode)
+    row_layouts, _total_weight = plan_ruler_row_layouts(
+        FTIR_RULER_REGIONS,
+        front=front_mode,
+        suppress_nitro_reporting=suppress_nitro_reporting,
+    )
     activities: list[dict[str, Any]] = []
     for layout in row_layouts:
         spec = layout["spec"]
@@ -130,7 +136,7 @@ def add_ftir_region_ruler(
         rel = ruler_region_activity(evidence, wn, y, spec)
         tier = ruler_activity_tier(rel, active_min=active_min, strong_min=strong_min)
         fill, line_col, lw = _tier_style(tier, front=front_mode)
-        note = spec.hover_note or spec.short_label
+        note = ruler_hover_note(spec, suppress_nitro=suppress_nitro_reporting)
         hover = (
             f"<b>{spec.short_label}</b><br>"
             f"{int(spec.lo)}–{int(spec.hi)} cm⁻¹<br>"

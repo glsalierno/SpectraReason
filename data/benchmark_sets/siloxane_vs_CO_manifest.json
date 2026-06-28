@@ -1,0 +1,158 @@
+{
+  "manifest_version": "1.0",
+  "name": "siloxane_vs_CO",
+  "problem": "siloxane",
+  "description": "Targeted confounder expansion for siloxane classification.",
+  "true_positive_classes": [
+    "siloxane_positive"
+  ],
+  "hard_negative_classes": [
+    "siloxane_hn_ether_ester",
+    "siloxane_hn_polymer_co"
+  ],
+  "supporting_classes": [
+    "siloxane_hn_atr_polymer"
+  ],
+  "classes": [
+    {
+      "class_id": "siloxane_positive",
+      "role": "true_positive",
+      "label": "Siloxane / silicone (Si\u2013O\u2013Si)",
+      "example_compounds": [
+        "polydimethylsiloxane",
+        "hexamethyldisiloxane",
+        "octamethylcyclotetrasiloxane",
+        "silicone oil"
+      ],
+      "tag_rules": [
+        "siloxane"
+      ],
+      "keyword_any": [
+        "siloxane",
+        "silicone",
+        "pdms",
+        "disiloxane",
+        "polysilox"
+      ],
+      "smarts": "[Si][OX2][Si]",
+      "preferred_source": "open_polymer_atr",
+      "expected_ambiguity": "Si\u2013O\u2013Si ~1000\u20131100 cm\u207b\u00b9; CH\u2083 rocking ~1260.",
+      "minimum_count": 8,
+      "ingested_count": 0,
+      "gap": 8,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "siloxane_hn_ether_ester",
+      "role": "hard_negative",
+      "label": "Ether / ester C\u2013O",
+      "example_compounds": [
+        "diethyl ether",
+        "ethyl acetate",
+        "peg",
+        "cellulose acetate"
+      ],
+      "tag_rules": [],
+      "keyword_any": [
+        "ether",
+        "ester",
+        "acetate",
+        "polyethylene glycol",
+        "peg"
+      ],
+      "smarts": "[OD2]([#6])[#6]",
+      "preferred_source": "sdbs_aist",
+      "expected_ambiguity": "C\u2013O ~1050\u20131150; lacks Si\u2013CH\u2083 1260 shoulder pattern.",
+      "minimum_count": 10,
+      "ingested_count": 0,
+      "gap": 10,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "siloxane_hn_polymer_co",
+      "role": "hard_negative",
+      "label": "C\u2013O-rich polymer (non-silicone)",
+      "example_compounds": [
+        "nylon",
+        "pet",
+        "pmma",
+        "pva",
+        "epoxy"
+      ],
+      "tag_rules": [
+        "polymer"
+      ],
+      "keyword_any": [
+        "nylon",
+        "polyester",
+        "pmma",
+        "polyvinyl",
+        "epoxy",
+        "polyurethane"
+      ],
+      "smarts": null,
+      "preferred_source": "open_polymer_atr",
+      "expected_ambiguity": "Strong C=O or C\u2013O; ester/amide carbonyl; no Si\u2013O\u2013Si.",
+      "minimum_count": 8,
+      "ingested_count": 0,
+      "gap": 8,
+      "sample_spectra": []
+    },
+    {
+      "class_id": "siloxane_hn_atr_polymer",
+      "role": "supporting",
+      "label": "ATR polymer (contact / baseline)",
+      "example_compounds": [
+        "nylon 6 ATR",
+        "pdms ATR",
+        "epoxy coating ATR"
+      ],
+      "tag_rules": [
+        "polymer",
+        "atr"
+      ],
+      "keyword_any": [
+        "atr",
+        "powder",
+        "film",
+        "coating"
+      ],
+      "smarts": null,
+      "preferred_source": "open_polymer_atr",
+      "expected_ambiguity": "ATR distortion; baseline drift; moisture-like 1600\u20131700.",
+      "minimum_count": 6,
+      "ingested_count": 0,
+      "gap": 6,
+      "sample_spectra": []
+    }
+  ],
+  "expected_behavior": "Separate Si\u2013O\u2013Si from ether/ester C\u2013O and carbonyl-rich polymers.",
+  "known_ambiguities": [
+    "Ester C\u2013O near 1100 vs Si\u2013O\u2013Si",
+    "Silicate filler vs silicone",
+    "ATR baseline distortion in polymers"
+  ],
+  "ingested_spectra": [],
+  "coverage": {
+    "siloxane_positive": {
+      "ingested": 0,
+      "minimum": 8,
+      "gap": 8
+    },
+    "siloxane_hn_ether_ester": {
+      "ingested": 0,
+      "minimum": 10,
+      "gap": 10
+    },
+    "siloxane_hn_polymer_co": {
+      "ingested": 0,
+      "minimum": 8,
+      "gap": 8
+    },
+    "siloxane_hn_atr_polymer": {
+      "ingested": 0,
+      "minimum": 6,
+      "gap": 6
+    }
+  }
+}

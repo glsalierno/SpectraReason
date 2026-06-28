@@ -8,7 +8,7 @@ interpretation and optional ML heads.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Literal, Iterable
 
 Category = Literal["family", "specific_fg", "local_motif", "fallback", "artifact"]
