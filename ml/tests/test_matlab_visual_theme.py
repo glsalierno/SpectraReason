@@ -24,7 +24,7 @@ from reports.report_render import (
 )
 from reports.structural_fg_svm_kronecker_report import run_batch
 
-_EXAMPLE = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
+_EXAMPLE = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
 
 
 def test_normalize_visual_theme() -> None:
@@ -118,7 +118,7 @@ def test_static_export_and_matlab_bundle(tmp_path: Path) -> None:
     assert "static-figures-note" not in html
     assert "visualization-only and do not change assignments" not in html
 
-    stem = "Catechol-120-80-9-IR"
+    stem = "Dopamine_Powder"
     assert (matlab_dir / f"{stem}_spectrum.csv").is_file()
     assert (matlab_dir / f"{stem}_peaks.csv").is_file()
     assert (matlab_dir / f"{stem}_ruler_regions.csv").is_file()

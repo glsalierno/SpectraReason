@@ -1,0 +1,11 @@
+{
+  "name": "siloxane_vs_C_O",
+  "description": "Si\u2013O\u2013Si vs C\u2013O stretches in fingerprint.",
+  "expected_behavior": "Strong Si\u2013O\u2013Si ~1000\u20131100 cm\u207b\u00b9; distinguish from ether C\u2013O.",
+  "known_ambiguities": [
+    "Silicate fillers",
+    "ester C\u2013O near 1100 cm\u207b\u00b9"
+  ],
+  "spectra": [],
+  "count": 0
+}

@@ -119,10 +119,15 @@ def _draw_ruler_panel(
     y: np.ndarray,
     front: bool = True,
     show_wavenumber_axis: bool = False,
+    suppress_nitro_reporting: bool = False,
 ) -> None:
     ax.set_xlim(float(np.nanmax(wn)), float(np.nanmin(wn)))
     ax.set_ylim(0, 1)
-    row_layouts, _ = plan_ruler_row_layouts(FTIR_RULER_REGIONS, front=front)
+    row_layouts, _ = plan_ruler_row_layouts(
+        FTIR_RULER_REGIONS,
+        front=front,
+        suppress_nitro_reporting=suppress_nitro_reporting,
+    )
     for layout in row_layouts:
         spec = layout["spec"]
         rel = ruler_region_activity(evidence, wn, y, spec)
@@ -182,8 +187,15 @@ def export_standalone_region_guide(
     import matplotlib.pyplot as plt
 
     evidence = pipeline.get("evidence") or {}
+    from ml.report_suppression import nitro_reporting_suppressed
+
+    suppress_nitro = nitro_reporting_suppressed(pipeline)
     stem = "".join(c if c.isalnum() or c in "._-" else "_" for c in Path(spectrum_name).stem)
-    _, total_w = plan_ruler_row_layouts(FTIR_RULER_REGIONS, front=True)
+    _, total_w = plan_ruler_row_layouts(
+        FTIR_RULER_REGIONS,
+        front=True,
+        suppress_nitro_reporting=suppress_nitro,
+    )
     fig_h = _ruler_figure_height_inches(total_w)
     fig, ax = plt.subplots(figsize=(11, fig_h))
     _draw_ruler_panel(
@@ -193,6 +205,7 @@ def export_standalone_region_guide(
         y=y,
         front=True,
         show_wavenumber_axis=True,
+        suppress_nitro_reporting=suppress_nitro,
     )
     ax.set_title("FTIR region guide (tentative ranges)", fontsize=11, fontweight="semibold", pad=10)
     fig.subplots_adjust(left=0.06, right=0.98, top=0.92, bottom=0.12)
@@ -292,6 +305,9 @@ def export_static_matplotlib_bundle(
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = "".join(c if c.isalnum() or c in "._-" else "_" for c in Path(spectrum_name).stem)
     evidence = pipeline.get("evidence") or {}
+    from ml.report_suppression import nitro_reporting_suppressed
+
+    suppress_nitro = nitro_reporting_suppressed(pipeline)
     spec_policy: StaticLabelPolicy = spectrum_label_policy or static_label_policy
     spec_max = max_static_labels if spec_policy != "all" else 999
 
@@ -337,7 +353,11 @@ def export_static_matplotlib_bundle(
 
     nrows = 3 if show_ruler else 2
     if show_ruler:
-        _, total_w = plan_ruler_row_layouts(FTIR_RULER_REGIONS, front=True)
+        _, total_w = plan_ruler_row_layouts(
+            FTIR_RULER_REGIONS,
+            front=True,
+            suppress_nitro_reporting=suppress_nitro,
+        )
         ruler_h = ruler_subplot_height_fraction(
             n_regions=len(FTIR_RULER_REGIONS),
             total_line_weight=total_w,
@@ -359,7 +379,13 @@ def export_static_matplotlib_bundle(
         axes = [axes]
     ax_i = 0
     if show_ruler:
-        _draw_ruler_panel(axes[ax_i], evidence=evidence, wn=wn, y=y)
+        _draw_ruler_panel(
+            axes[ax_i],
+            evidence=evidence,
+            wn=wn,
+            y=y,
+            suppress_nitro_reporting=suppress_nitro,
+        )
         ax_i += 1
     ax_spec = axes[ax_i]
     ax_kron = axes[ax_i + 1]

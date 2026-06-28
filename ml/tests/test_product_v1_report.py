@@ -29,7 +29,7 @@ from reports.report_render import (
 )
 from reports.structural_fg_svm_kronecker_report import run_batch
 
-_EXAMPLE = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
+_EXAMPLE = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
 
 
 def test_compress_caution_shortens_verbose_text() -> None:

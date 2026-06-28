@@ -23,7 +23,7 @@ from ml.ftir_deconv_assignment import (
 )
 from reports.deconv_report import MARKER_DECONV_OVERLAY, build_deconv_candidates_table_html
 
-_EXAMPLE = _ROOT / "examples" / "spectra" / "Catechol-120-80-9-IR.jdx"
+_EXAMPLE = _ROOT / "examples" / "spectra" / "Dopamine_Powder.CSV"
 
 
 def _synth_gaussian(x: np.ndarray, center: float, amp: float, width: float = 12.0) -> np.ndarray:

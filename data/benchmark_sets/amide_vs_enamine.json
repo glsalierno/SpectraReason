@@ -1,0 +1,11 @@
+{
+  "name": "amide_vs_enamine",
+  "description": "Amide C=O/N\u2013H vs enamine C=C/N.",
+  "expected_behavior": "Amide shows 1650\u20131680 + 1500\u20131550; enamine lacks strong amide carbonyl pair.",
+  "known_ambiguities": [
+    "Imides",
+    "lactams"
+  ],
+  "spectra": [],
+  "count": 0
+}

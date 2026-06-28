@@ -266,8 +266,21 @@ def format_key_spectral_evidence(ent: dict[str, Any], pipeline: dict[str, Any], 
 
 def _interpretation_phrase(ent: dict[str, Any], pipeline: dict[str, Any], lab: str) -> str:
     from reports.front_consensus import front_display_name, nitro_is_supported, professional_confidence_label
+    from ml.report_suppression import nitro_reporting_suppressed
 
-    if lab in ("NO2_asym_region", "NO2_sym_region") or (lab == "nitro" and not nitro_is_supported(pipeline)):
+    if nitro_reporting_suppressed(pipeline):
+        if lab in (
+            "NO2_asym_region",
+            "NO2_sym_region",
+            "nitro",
+            "N_O_NO2_overlap",
+            "n_oxide_confounded_region",
+            "heterocyclic_N_O_region",
+            "heterocyclic_N_oxide",
+            "pyrrole_N_oxide_like",
+        ):
+            return "insufficient evidence for standalone assignment"
+    elif lab in ("NO2_asym_region", "NO2_sym_region") or (lab == "nitro" and not nitro_is_supported(pipeline)):
         return "N–O / NO₂ overlap (paired nitro not confirmed)"
     prof = professional_confidence_label(ent, pipeline, lab)
     if prof == "Insufficient evidence":

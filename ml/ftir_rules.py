@@ -489,9 +489,12 @@ def assign_functional_groups_from_evidence(
     match_map = _match_map(evidence)
     assignments: dict[str, Any] = {}
     active_rules = get_effective_fg_rules(cfg)
+    disabled_labels = frozenset((cfg or {}).get("disabled_labels") or [])
     ratios = evidence.get("ratios") or {}
 
     for label, spec in active_rules.items():
+        if label in disabled_labels:
+            continue
         required = list(spec.get("required") or [])
         required_any_groups: list[list[str]] = list(spec.get("required_any_groups") or [])
         supporting = list(spec.get("supporting") or [])
@@ -696,7 +699,12 @@ def assign_functional_groups_from_evidence(
     if mode == "v3":
         from ml.ftir_guardrails import apply_v3_guardrails, annotate_non_guarded_labels
 
-        extra = apply_v3_guardrails(assignments, evidence, ontology=str(cfg.get("ontology") or "v3"))
+        extra = apply_v3_guardrails(
+            assignments,
+            evidence,
+            ontology=str(cfg.get("ontology") or "v3"),
+            suppress_nitro_reporting=bool(cfg.get("suppress_nitro_reporting")),
+        )
         ambiguity_labels = list(extra.get("ambiguity_labels") or [])
         guardrails_diagnostics = list(extra.get("diagnostics") or [])
         guardrails_version = str(extra.get("version") or "v3_guarded")

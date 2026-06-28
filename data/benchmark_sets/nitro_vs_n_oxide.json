@@ -1,0 +1,10 @@
+{
+  "name": "nitro_vs_n_oxide",
+  "description": "Nitro vs N-oxide: overlapping NO stretches and aromatic context.",
+  "expected_behavior": "Rules/ML should not collapse nitro and N-oxide; expect partial band overlap near 1300\u20131600 cm\u207b\u00b9.",
+  "known_ambiguities": [
+    "Aromatic nitro compounds vs heterocyclic N-oxides"
+  ],
+  "spectra": [],
+  "count": 0
+}
