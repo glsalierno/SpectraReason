@@ -73,30 +73,30 @@ See [`docs/PRODUCTION_DEFAULTS.md`](docs/PRODUCTION_DEFAULTS.md).
 ## Architecture
 
 ```mermaid
-flowchart LR
-  subgraph ingest [Ingestion]
-    CSV[JDX/CSV spectrum]
-    PRE[Preprocess + peaks]
+graph LR
+  subgraph sg_ingest["Ingestion"]
+    CSV["JDX/CSV spectrum"]
+    PRE["Preprocess + peaks"]
   end
-  subgraph evidence [Evidence-first core]
-    BL[Band library YAML]
-    EV[Evidence v2 features]
-    RL[Rules + v3 guardrails]
+  subgraph sg_evidence["Evidence-first core"]
+    BL["Band library YAML"]
+    EV["Evidence v2 features"]
+    RL["Rules + v3 guardrails"]
   end
-  subgraph optional [Bundled ML]
-    FAM[Family SVM joblib]
-    SPE[Specific SVM joblib]
+  subgraph sg_ml["Bundled ML"]
+    FAM["Family SVM joblib"]
+    SPE["Specific SVM joblib"]
   end
-  subgraph out [Reports]
-    FRONT[Front-facing HTML]
+  subgraph sg_reports["Reports"]
+    FRONT["Front-facing HTML"]
   end
   CSV --> PRE --> EV
   BL --> EV --> RL
   EV --> FAM
   EV --> SPE
   RL --> FRONT
-  FAM -. annotate .-> FRONT
-  SPE -. annotate .-> FRONT
+  FAM -.->|annotate| FRONT
+  SPE -.->|annotate| FRONT
 ```
 
 **v4 SVM inputs (434-D):** 14 spectral window stats + 419 evidence-v2 columns + structure flag.  
