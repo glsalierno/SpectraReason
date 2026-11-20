@@ -7,8 +7,8 @@ alwaysApply: true
 
 When telling the user where something was written or how to open it:
 
-- Use the **full absolute path** (e.g. `c:\Users\...\FTIR_SVM_v2\examples\_evidence_pipeline_report\REPORT.html`), not a repo-relative-only path like `examples/.../REPORT.html` unless you also give the absolute path in the same message.
+- Use the **full absolute path** (e.g. `<repo-root>/examples/_evidence_pipeline_report/REPORT.html`), not a repo-relative-only path like `examples/.../REPORT.html` unless you also give the absolute path in the same message.
 - Same for **CSV export dirs**, **logs**, **joblib outputs**, and any **HTML/JSON** produced by scripts.
-- When suggesting shell commands, prefer **`Set-Location` to the workspace** then paths, or pass **absolute** `--out` / `--inputs` when ambiguity would confuse (OneDrive, multiple clones).
+- When suggesting shell commands, prefer **`Set-Location` to the workspace** then paths, or pass **absolute** `--out` / `--inputs` when ambiguity would confuse (e.g. multiple clones).
 
 This matches the user's expectation: **hover = local; tables = global; assistant replies = full paths for deliverables.**

@@ -62,7 +62,7 @@ python reports/structural_fg_svm_kronecker_report.py batch ^
 python reports/structural_fg_svm_kronecker_report.py batch ^
   --inputs "c:\path\to\data\*.CSV" ^
   --ml-mode basic ^
-  --basic-model "c:\path\to\FTIR_SVM_v2\ml\runs\struct_fg_basic_v3_guarded_<timestamp>.joblib" ^
+  --basic-model "<path-to-SpectraReason>/ml/runs/struct_fg_basic_v3_guarded_<timestamp>.joblib" ^
   --fusion-mode annotate ^
   --ml-guardrails strict ^
   --guardrails v3 ^
