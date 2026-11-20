@@ -4,10 +4,10 @@ scipy>=1.10
 pandas>=2.0
 scikit-learn>=1.3
 joblib>=1.3
-mordred
+mordred>=1.2.0,<2
 matplotlib>=3.7
 plotly>=5.18
-certifi
+certifi>=2024.7.4
 PyYAML>=6.0
 # Optional: pip install kaleido  (static Plotly PNG export)
 # RDKit: conda install -c conda-forge rdkit  (required for SMARTS training)
