@@ -10,38 +10,68 @@ supported vs tentative calls; calibrated SVMs add **advisory** scores (`fusion-m
 
 ---
 
+## Start here
+
+- **Preview without installing:** [Open the example report file on GitHub](reports/reference_snapshots/front/REPORT.html), select **Download raw file**, then open the downloaded `REPORT.html` (about 21 MB) in your browser. For a quicker look, [see the screenshot](#screenshot).
+- **Run one spectrum:** [Generate a report from the bundled catechol example](#quickstart-with-ml) on Windows, macOS, or Linux.
+- **Use a tagged version:** [Browse releases](https://github.com/glsalierno/SpectraReason/releases). When citing a generated report, record the commit in its metadata.
+
+---
 ## What you get out of the box
 
 This repository includes **ready-to-use ML artifacts** (no NIST rebuild required for
 inference or retrain-on-bundled-data):
-
 | Bundle | Location | Use |
 |--------|----------|-----|
 | **Production SVMs** | `data/training/bundled/v4_production/*.joblib` | Front/debug reports with `--ml-mode both` |
 | **v4 training matrices** | `data/training/bundled/v4_production/*.npz` | ~15.6k NIST spectra, **434-D** `spectral+evidence_v2` |
 | **PubChem cache** | `data/training/bundled/v4_production/pubchem_train_writable.json` | Structures used for SMARTS weak labels at build time |
 | **Legacy v7 (Mordred)** | `data/training/bundled/v7_mordred/` | **303-D** spectral+RDKit+Mordred NPZ + v7 joblib |
-
 **Not in git:** NIST SQLite index (~GB). Optional local symlink: `data/external/nist_index.sqlite`.
 
 Details: [`data/training/bundled/README.md`](data/training/bundled/README.md) · [`docs/ML_ARTIFACTS.md`](docs/ML_ARTIFACTS.md)
 
 ---
-
 ## Quickstart (with ML)
 
-```bash
+**Before cloning:** Install Git, [Git LFS](https://git-lfs.com/), and Python 3.10+ (3.11 recommended on Windows). Use `git lfs pull` after cloning to fetch the actual bundled files, not just their pointers. The example uses bundled production models; you do not need to download or rebuild the NIST index.
+
+### Windows (PowerShell)
+
+```powershell
+git lfs install
 git clone https://github.com/glsalierno/SpectraReason.git
 cd SpectraReason
+git lfs pull
 python -m venv .venv
-source .venv/bin/activate          # Windows: .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-export PYTHONPATH="$(pwd)"         # Windows: $env:PYTHONPATH = (Get-Location).Path
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+$env:PYTHONPATH = (Get-Location).Path
+.\scripts\setup_bundled_artifacts.ps1
 
-# Install bundled joblibs into ml/runs/ (expected paths for reports)
-./scripts/setup_bundled_artifacts.sh   # Windows: .\scripts\setup_bundled_artifacts.ps1
+.\.venv\Scripts\python.exe reports/structural_fg_svm_kronecker_report.py batch `
+  --inputs examples/spectra/Catechol-120-80-9-IR.jdx `
+  --ontology v4 --guardrails v3 --ml-mode both `
+  --family-model ml/runs/struct_fg_family_v4_ontology_latest.joblib `
+  --specific-model ml/runs/struct_fg_specific_v4_ontology_latest.joblib `
+  --fusion-mode annotate --ml-guardrails strict `
+  --report-style product_v1 --report-audience front `
+  --visual-theme matlab --show-region-ruler `
+  --out reports/demo_front/REPORT.html
+```
 
-python reports/structural_fg_svm_kronecker_report.py batch \
+### macOS or Linux (Bash)
+
+```bash
+git lfs install
+git clone https://github.com/glsalierno/SpectraReason.git
+cd SpectraReason
+git lfs pull
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+export PYTHONPATH="$(pwd)"
+bash scripts/setup_bundled_artifacts.sh
+
+.venv/bin/python reports/structural_fg_svm_kronecker_report.py batch \
   --inputs examples/spectra/Catechol-120-80-9-IR.jdx \
   --ontology v4 --guardrails v3 --ml-mode both \
   --family-model ml/runs/struct_fg_family_v4_ontology_latest.joblib \
@@ -52,10 +82,9 @@ python reports/structural_fg_svm_kronecker_report.py batch \
   --out reports/demo_front/REPORT.html
 ```
 
-Open `reports/demo_front/REPORT.html` in a browser.
+**Expected result:** Open `reports/demo_front/REPORT.html` in your browser. Look for the spectrum, its band evidence, and a consensus table that distinguishes supported from tentative assignments. In this example the SVM scores are advisory.
 
 ---
-
 ## Philosophy
 
 | Layer | Role |
@@ -108,10 +137,9 @@ graph LR
 
 ![SpectraReason front-facing report](docs/assets/screenshots/front_report.png)
 
-Interactive bundle: [`reports/reference_snapshots/front/REPORT.html`](reports/reference_snapshots/front/REPORT.html)
+For the interactive version, [download the example HTML](#start-here) and open it locally.
 
 ---
-
 ## Repository layout
 
 ```
