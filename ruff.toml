@@ -1,0 +1,5 @@
+target-version = "py310"
+
+[lint]
+# Start with syntax and runtime-correctness checks, without a style-only rewrite.
+select = ["E9", "F63", "F7"]
