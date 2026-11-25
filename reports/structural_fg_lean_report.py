@@ -10,7 +10,7 @@ Compared to ``structural_fg_svm_kronecker_report.py``:
 
 Default is evidence-only (``--ml-mode none``), matching pre-production guidance.
 
-Run from **FTIR_SVM_v2** root::
+Run from the **SpectraReason** root::
 
     $env:PYTHONPATH = (Get-Location).Path
     python reports/structural_fg_lean_report.py batch \\
