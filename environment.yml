@@ -12,10 +12,12 @@ dependencies:
   - matplotlib>=3.7
   - plotly>=5.18
   - pyyaml>=6.0
+  - certifi>=2024.7.4
   - rdkit
   - pip
   - pip:
-      - mordred
+      - mordred>=1.2.0,<2
       - kaleido>=0.2
       - pytest>=7.0
       - vulture>=2.11
+      - ruff>=0.9,<1
